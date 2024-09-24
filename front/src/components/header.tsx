@@ -45,11 +45,11 @@ const Header: FC = ({}) => {
             className="cursor-pointer"
           />
           {isOpen && (
-            <ul className="absolute border-solid border border-black cursor-pointer text-base mt-14 w-52 rounded py-2">
-              <Link href="/register">
+            <ul className="absolute bg-white border-solid border border-black cursor-pointer text-base mt-14 w-52 rounded py-2">
+              <Link href="/login">
                 <li className="hover:bg-blue hover:text-white p-2">Sign In</li>
               </Link>
-              <Link href="/login">
+              <Link href="/register">
                 <li className="hover:bg-blue hover:text-white p-2">Sign Up</li>
               </Link>
             </ul>
