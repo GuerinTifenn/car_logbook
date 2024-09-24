@@ -30,15 +30,15 @@ const Header: FC = ({}) => {
   }, []);
   return (
     <header>
-      <nav className="flex justify-between m-5">
+      <nav className="flex justify-between p-2 items-center border-b border-grey">
         <Link href="/">
-          <Image src={logo} width={48} height={48} alt="Autolog logo"></Image>
+          <Image src={logo} width={100} height={100} alt="Autolog logo"></Image>
         </Link>
         <div ref={dropdownRef} className="flex flex-col items-end">
           <Image
             src={userIconWhite}
-            width={48}
-            height={48}
+            width={40}
+            height={40}
             alt="user not connected logo"
             role="button"
             onClick={handleClick}
