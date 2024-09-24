@@ -11,9 +11,19 @@ export default function Register() {
 
   const submitForm = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    console.log('lastnAME', lastName)
-    console.log('firs', firstName)
+    console.log("lastName", lastName);
+    console.log("firs", firstName);
   };
+
+  const formValid = (): boolean => {
+    return (
+      lastName.length > 1 &&
+      firstName.length > 1 &&
+      email.length > 1 &&
+      password.length > 1
+    );
+  };
+
   return (
     <section>
       <div className="m-2 xl:m-5 flex flex-col lg:flex-row gap-5">
@@ -54,7 +64,7 @@ export default function Register() {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password">Password*</label>
                 <input
                   className="border border-1 px-2 py-2.5 w-full"
                   type="password"
@@ -64,7 +74,18 @@ export default function Register() {
                 />
               </div>
               <div className="mt-3">
-                <button className="bg-blue px-2 py-2.5 w-full text-white" type="submit" onClick={submitForm}>Submit</button>
+                <button
+                  className={`${
+                    formValid()
+                      ? "bg-blue"
+                      : "bg-grey text-greydark"
+                  } px-2 py-2.5 w-full text-white`}
+                  type="submit"
+                  disabled={!formValid()}
+                  onClick={submitForm}
+                >
+                  Submit
+                </button>
               </div>
             </fieldset>
           </form>
