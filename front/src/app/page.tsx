@@ -1,5 +1,5 @@
-import Image from "next/image";
-import home from "../public/assets/home.jpeg";
+import Image from 'next/image';
+import home from '../public/assets/home.jpeg';
 
 export default function Home() {
   return (
@@ -19,7 +19,7 @@ export default function Home() {
           <p className="text-xl text-justify m-5">
             <b>
               Welcome to AutoLog, your digital tool for tracking vehicle
-              maintenance and repair expenses.{" "}
+              maintenance and repair expenses.{' '}
             </b>
             <br />
             <br />

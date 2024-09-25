@@ -1,9 +1,9 @@
-"use client";
-import React, { FC, useState, useRef, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import logo from "../public/assets/logo.svg";
-import userIconWhite from "../public/assets/user_white.svg";
+'use client';
+import React, { FC, useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import logo from '../public/assets/logo.svg';
+import userIconWhite from '../public/assets/user_white.svg';
 
 const Header: FC = ({}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -21,11 +21,11 @@ const Header: FC = ({}) => {
     }
   };
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
     // Nettoie l'écouteur d'événement lors du démontage du composant
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
   return (

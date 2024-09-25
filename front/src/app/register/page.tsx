@@ -1,7 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import signup from "../../public/assets/signup.jpeg";
+import signupImage from "../../public/assets/signup.jpeg";
+import { signup } from "../../../services/apiUser";
 
 export default function Register() {
   const [lastName, setLastName] = useState<string>("");
@@ -9,10 +10,22 @@ export default function Register() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const submitForm = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const submitForm = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    console.log("lastName", lastName);
-    console.log("firs", firstName);
+
+    const userData = {
+      last_name: lastName,
+      first_name: firstName,
+      email,
+      password,
+    };
+    try {
+      await signup(userData); // Call the signup service
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Signup error:", error.message); // Log the error
+      }
+    }
   };
 
   const formValid = (): boolean => {
@@ -76,9 +89,7 @@ export default function Register() {
               <div className="mt-3">
                 <button
                   className={`${
-                    formValid()
-                      ? "bg-blue"
-                      : "bg-grey text-greydark"
+                    formValid() ? "bg-blue" : "bg-grey text-greydark"
                   } px-2 py-2.5 w-full text-white`}
                   type="submit"
                   disabled={!formValid()}
@@ -93,7 +104,7 @@ export default function Register() {
         <div className="w-full">
           <Image
             layout="responsive"
-            src={signup}
+            src={signupImage}
             width={100}
             height={100}
             alt="sign up logo"
