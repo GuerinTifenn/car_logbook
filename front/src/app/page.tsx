@@ -16,18 +16,24 @@ export default function Home() {
         </div>
         <div className="w-full xl:w-6/12 gap-5 flex flex-col">
           <h1 className="text-5xl text-center m-5">Welcome to AutoLog</h1>
-          <p className="text-lg m-5">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas
-            commodo sem ante, non gravida leo placerat sed. Nulla a felis
-            lectus. <br />
+          <p className="text-xl text-justify m-5">
+            <b>
+              Welcome to AutoLog, your digital tool for tracking vehicle
+              maintenance and repair expenses.{" "}
+            </b>
             <br />
-            Donec at tempor quam. Vivamus et elementum dolor, eu porta ante.
-            Nulla eros risus, vestibulum nec libero vel, imperdiet finibus est.
-            Mauris non finibus leo. Sed a dignissim massa. Aenean porta auctor
-            ipsum, et feugiat orci luctus sit amet. Maecenas at nulla quis massa
-            vulputate eleifend a sed magna. Mauris nec condimentum elit. Integer
-            vitae arcu dui. Duis purus nunc, tristique a vehicula eu, commodo
-            sed leo.
+            <br />
+            CarLogBook simplifies the management and recording of all
+            interventions on your vehicles, whether it&apos;s repairs,
+            maintenance, or modifications. Easily track costs, dates, and
+            details of each operation, keeping a complete and clear history of
+            your vehicle. <br />
+            Our platform also allows you to transfer the vehicle to another
+            user, automatically passing on the full maintenance history. <br />
+            <br />
+            No more hassle with paperwork - AutoLog offers a simple and
+            efficient solution to stay organized and keep accurate records of
+            your automotive expenses.
           </p>
         </div>
       </div>
