@@ -3,12 +3,17 @@ import React, { useState } from "react";
 import Image from "next/image";
 import signupImage from "../../public/assets/signup.jpeg";
 import { signup } from "../../../services/apiUser";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
   const [lastName, setLastName] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const router = useRouter();
+  const resetForm = () => {
+    setEmail(""), setPassword(""), setFirstName(""), setLastName("");
+  };
 
   const submitForm = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -20,7 +25,14 @@ export default function Register() {
       password,
     };
     try {
-      await signup(userData); // Call the signup service
+      const response = await signup(userData);
+      const data = await response.json();
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        console.log(data.token);
+        router.push("/"); //a changer avec dashboard
+      }
+      resetForm();
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error("Signup error:", error.message); // Log the error
