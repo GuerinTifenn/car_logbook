@@ -1,5 +1,5 @@
-import Image from 'next/image';
-import home from '../public/assets/home.jpeg';
+import Image from "next/image";
+import home from "../public/assets/home.jpeg";
 
 export default function Home() {
   return (
@@ -7,11 +7,12 @@ export default function Home() {
       <div className="flex flex-col xl:flex-row m-8 gap-5">
         <div className="w-full xl:w-6/12">
           <Image
-            layout="responsive"
             src={home}
-            width={100}
-            height={100}
-            alt="home logo"
+            alt="Image illustrating AutoLog features"
+            width={800}
+            height={600}
+            className="w-full h-auto"
+            priority
           />
         </div>
         <div className="w-full xl:w-6/12 gap-5 flex flex-col">
@@ -19,15 +20,15 @@ export default function Home() {
           <p className="text-xl text-justify m-5">
             <b>
               Welcome to AutoLog, your digital tool for tracking vehicle
-              maintenance and repair expenses.{' '}
+              maintenance and repair expenses.
             </b>
             <br />
             <br />
-            CarLogBook simplifies the management and recording of all
-            interventions on your vehicles, whether it&apos;s repairs,
-            maintenance, or modifications. Easily track costs, dates, and
-            details of each operation, keeping a complete and clear history of
-            your vehicle. <br />
+            AutoLog simplifies the management and recording of all interventions
+            on your vehicles, whether it&apos;s repairs, maintenance, or
+            modifications. Easily track costs, dates, and details of each
+            operation, keeping a complete and clear history of your vehicle.{" "}
+            <br />
             Our platform also allows you to transfer the vehicle to another
             user, automatically passing on the full maintenance history. <br />
             <br />

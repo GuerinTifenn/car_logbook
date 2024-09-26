@@ -114,12 +114,11 @@ export default function Register() {
           </form>
         </div>
         <div className="w-full">
-          <Image
-            layout="responsive"
+        <Image
             src={signupImage}
-            width={100}
-            height={100}
-            alt="sign up logo"
+            alt="sign up image"
+            className="w-full h-auto"
+            priority
           />
         </div>
       </div>
