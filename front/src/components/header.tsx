@@ -5,11 +5,15 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "../public/assets/logo.svg";
 import userIconWhite from "../public/assets/user_white.svg";
+import userIconBlack from "../public/assets/user_black.svg";
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 const Header: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname(); // Utilisation du hook usePathname
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -53,7 +57,7 @@ const Header: FC = () => {
         </Link>
         <div ref={dropdownRef} className="flex flex-col items-end">
           <Image
-            src={userIconWhite}
+            src={isAuthenticated ? userIconBlack : userIconWhite}
             width={40}
             height={40}
             alt="user not connected logo"

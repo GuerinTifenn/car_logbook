@@ -4,11 +4,15 @@ import Image from "next/image";
 import loginImage from "../../public/assets/login.jpeg";
 import { signin } from "../../../services/apiUser";
 import { useRouter } from "next/navigation";
+import { useDispatch } from 'react-redux';
+import { setToken } from '../../../store/authSlice';
+import { AppDispatch } from '../../../store/store';
 
 export default function Login() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
   const resetForm = () => {
     setEmail(""), setPassword("");
@@ -25,6 +29,7 @@ export default function Login() {
       const response = await signin(userData);
       const data = await response.json();
       if (data.token) {
+        dispatch(setToken(data.token)); // Stocke le token dans Redux
         localStorage.setItem("token", data.token);
         router.push("/"); //a changer avec dashboard
       }

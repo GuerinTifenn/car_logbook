@@ -4,6 +4,9 @@ import Image from "next/image";
 import signupImage from "../../public/assets/signup.jpeg";
 import { signup } from "../../../services/apiUser";
 import { useRouter } from "next/navigation";
+import { useDispatch } from 'react-redux';
+import { setToken } from '../../../store/authSlice';
+import { AppDispatch } from '../../../store/store';
 
 export default function Register() {
   const [lastName, setLastName] = useState<string>("");
@@ -11,6 +14,8 @@ export default function Register() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+
   const resetForm = () => {
     setEmail(""), setPassword(""), setFirstName(""), setLastName("");
   };
@@ -28,6 +33,7 @@ export default function Register() {
       const response = await signup(userData);
       const data = await response.json();
       if (data.token) {
+        dispatch(setToken(data.token)); // Stocke le token dans Redux
         localStorage.setItem("token", data.token);
         router.push("/"); //a changer avec dashboard
       }
