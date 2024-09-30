@@ -2,22 +2,38 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import loginImage from "../../public/assets/login.jpeg";
+import { signin } from "../../../services/apiUser";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const router = useRouter();
 
   const resetForm = () => {
     setEmail(""), setPassword("");
   };
 
-  const submitForm = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const submitForm = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    console.log("Email:", email);
-    console.log("Password:", password);
-
-    resetForm();
+    const userData = {
+      email,
+      password,
+    };
+    try {
+      const response = await signin(userData);
+      const data = await response.json();
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        router.push("/"); //a changer avec dashboard
+      }
+      resetForm();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Signin error:", error.message); // Log the error
+      }
+    }
   };
 
   const formValid = (): boolean => {
@@ -42,7 +58,7 @@ export default function Login() {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="password">Password*</label>
+                <label htmlFor="password">Password</label>
                 <input
                   className="border border-1 px-2 py-2.5 w-full"
                   type="password"
@@ -51,6 +67,13 @@ export default function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
+              <p>
+                Don&apos;t have an account?{" "}
+                <a href="/register" className="underline">
+                  Sign up
+                </a>
+              </p>
+
               <div className="mt-3">
                 <button
                   className={`${

@@ -1,13 +1,15 @@
 "use client";
 import React, { FC, useState, useRef, useEffect } from "react";
+import { usePathname } from "next/navigation"; // Import du hook usePathname
 import Image from "next/image";
 import Link from "next/link";
 import logo from "../public/assets/logo.svg";
 import userIconWhite from "../public/assets/user_white.svg";
 
-const Header: FC = ({}) => {
+const Header: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname(); // Utilisation du hook usePathname
 
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -18,7 +20,7 @@ const Header: FC = ({}) => {
       dropdownRef.current &&
       !dropdownRef.current.contains(event.target as Node)
     ) {
-      setIsOpen(false); // Ferme le dropdown
+      setIsOpen(false); // Ferme le dropdown si on clique en dehors
     }
   };
 
@@ -30,6 +32,11 @@ const Header: FC = ({}) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // Ferme le dropdown lorsque le pathname change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   return (
     <header>
@@ -56,13 +63,23 @@ const Header: FC = ({}) => {
             priority
           />
           {isOpen && (
-            <ul className="absolute bg-white border-solid border border-grey cursor-pointer text-base mt-14 w-52 rounded py-2">
-              <Link href="/login">
-                <li className="hover:bg-blue hover:text-white p-2">Sign In</li>
-              </Link>
-              <Link href="/register">
-                <li className="hover:bg-blue hover:text-white p-2">Sign Up</li>
-              </Link>
+            <ul className="absolute bg-white border border-grey cursor-pointer text-base mt-14 w-52 rounded py-2">
+              <li>
+                <Link
+                  href="/login"
+                  className="block hover:bg-blue hover:text-white p-2"
+                >
+                  Sign In
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/register"
+                  className="block hover:bg-blue hover:text-white p-2"
+                >
+                  Sign Up
+                </Link>
+              </li>
             </ul>
           )}
         </div>

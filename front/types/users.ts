@@ -12,3 +12,8 @@ export type UserPayLoad = {
   email: string;
   password: string;
 };
+
+export type UserSignInPayLoad = {
+  email: string;
+  password: string;
+};

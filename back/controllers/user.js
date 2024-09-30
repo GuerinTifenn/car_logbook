@@ -42,3 +42,35 @@ exports.signup = (req, res, next) => {
     })
     .catch((error) => res.status(500).json({ error }));
 };
+
+exports.signin = (req, res, next) => {
+  User.findOne({ email: req.body.email })
+    .then((existingUser) => {
+      if (!existingUser) {
+        return res.status(401).json({
+          error: { message: "User not found", code: "user not found" },
+        });
+      }
+      bcrypt
+        .compare(req.body.password, existingUser.password)
+        .then((valid) => {
+          if (!valid) {
+            return res.status(401).json({
+              error: { message: "Wrong password", code: "wrong password" },
+            });
+          }
+          res.status(200).json({
+            userId: existingUser._id,
+            token: jwt.sign({ userId: existingUser._id, email: existingUser.email }, "RANDOM_SECRET_TOKEN", {
+              expiresIn: "24h",
+            }),
+          });
+        })
+        .catch((error) => {
+          res.status(500).json({ error });
+        });
+    })
+    .catch((error) => {
+      res.status(500).json({ error });
+    });
+  };

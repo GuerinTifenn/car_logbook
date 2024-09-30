@@ -29,7 +29,6 @@ export default function Register() {
       const data = await response.json();
       if (data.token) {
         localStorage.setItem("token", data.token);
-        console.log(data.token);
         router.push("/"); //a changer avec dashboard
       }
       resetForm();
@@ -89,7 +88,7 @@ export default function Register() {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="password">Password*</label>
+                <label htmlFor="password">Password</label>
                 <input
                   className="border border-1 px-2 py-2.5 w-full"
                   type="password"
@@ -114,7 +113,7 @@ export default function Register() {
           </form>
         </div>
         <div className="w-full">
-        <Image
+          <Image
             src={signupImage}
             alt="sign up image"
             className="w-full h-auto"
