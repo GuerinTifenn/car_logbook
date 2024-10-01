@@ -14,6 +14,12 @@ jest.mock('next/image', () => ({
 describe('Home Component', () => {
   test('renders Home component', () => {
     render(<Home />);
-    expect(screen.getByText('Welcome to AutoLog')).toBeInTheDocument(); 
+    expect(screen.getByText('Welcome to AutoLog')).toBeInTheDocument();
+  });
+  test('renders the image correctly', () => {
+    render(<Home />)
+    const image = screen.getByAltText('Image illustrating AutoLog features');
+    expect(image).toBeInTheDocument();
+    expect(image).toHaveAttribute('src', 'test-file-stub');
   });
 });
