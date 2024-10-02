@@ -6,14 +6,16 @@ import Link from "next/link";
 import logo from "../public/assets/logo.svg";
 import userIconWhite from "../public/assets/user_white.svg";
 import userIconBlack from "../public/assets/user_black.svg";
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 const Header: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname(); // Utilisation du hook usePathname
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
 
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -52,7 +54,6 @@ const Header: FC = () => {
             height={100}
             alt="Autolog logo"
             className="w-32 h-auto"
-            priority
           />
         </Link>
         <div ref={dropdownRef} className="flex flex-col items-end">
@@ -64,7 +65,6 @@ const Header: FC = () => {
             role="button"
             onClick={handleClick}
             className="cursor-pointer w-10 h-auto"
-            priority
           />
           {isOpen && (
             <ul className="absolute bg-white border border-grey cursor-pointer text-base mt-14 w-52 rounded py-2">

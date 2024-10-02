@@ -33,7 +33,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "__test__/home.test.tsx"
-  ],
+, "__mocks__/fileTransformer.js", "__mocks__/next/image.ts"  ],
   "exclude": [
     "node_modules"
   ]

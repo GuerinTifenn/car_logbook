@@ -10,11 +10,13 @@ const config: Config = {
         tsconfig: '<rootDir>/tsconfig.jest.json', // Spécifiez `tsconfig.jest.json` ici
       },
     ],
+    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+      '<rootDir>/__mocks__/fileTransformer.js',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'], // Extensions reconnues par Jest
   moduleNameMapper: {
     '^.+\\.(css|scss)$': 'identity-obj-proxy', // Mock des fichiers de styles
-    '^.+\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js', // Mock des fichiers d'images
+    '^next/image$': '<rootDir>/__mocks__/next/image.ts',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'], // Fichier de configuration Jest pour `jest-dom`
   clearMocks: true, // Nettoie automatiquement les mocks entre les tests

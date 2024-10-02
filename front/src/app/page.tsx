@@ -12,7 +12,7 @@ export default function Home() {
             width={800}
             height={600}
             className="w-full h-auto"
-            priority
+            priority={true}
           />
         </div>
         <div className="w-full xl:w-6/12 gap-5 flex flex-col">
