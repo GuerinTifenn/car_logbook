@@ -5,6 +5,9 @@ const app = express();
 const dbURI = `mongodb+srv://${userName}:${password}@${clusterName}/${dbName}?retryWrites=true&w=majority`;
 const bodyParser = require("body-parser");
 const userRoutes = require("./routes/user");
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const auth = require("./middleware/auth");
 
 mongoose
   .connect(dbURI)
@@ -24,10 +27,21 @@ app.use((req, res, next) => {
   next();
 });
 app.use(bodyParser.json());
+app.use(cookieParser());
+
+app.use(cors({
+  origin: 'http://localhost:3001',
+  credentials: true
+}));
+
 
 app.get("/", (req, res) => {
   res.send("GET request");
 });
+
+app.get('/dashboard', auth, (req, res) => {
+  res.status(200).json({message: 'dashboard access'})
+})
 
 app.use("/api/", userRoutes);
 

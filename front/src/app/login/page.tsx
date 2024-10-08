@@ -31,7 +31,7 @@ export default function Login() {
       if (data.token) {
         dispatch(setToken(data.token)); // Stocke le token dans Redux
         localStorage.setItem("token", data.token);
-        router.push("/"); //a changer avec dashboard
+        router.push("/dashboard");
       }
       resetForm();
     } catch (error: unknown) {
@@ -82,7 +82,7 @@ export default function Login() {
               <div className="mt-3">
                 <button
                   className={`${
-                    formValid() ? "bg-blue" : "bg-grey text-greydark"
+                    formValid() ? "bg-blue hover:bg-bluedark" : "bg-grey text-greydark"
                   } px-2 py-2.5 w-full text-white`}
                   type="submit"
                   disabled={!formValid()}
