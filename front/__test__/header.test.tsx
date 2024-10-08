@@ -5,6 +5,7 @@ import Header from "../src/components/header";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 
+
 // Mock `next/link`
 jest.mock("next/link", () => {
   const Link = ({
@@ -18,9 +19,10 @@ jest.mock("next/link", () => {
   return Link;
 });
 
-// Mock`next/router` pour les tests
-jest.mock("next/router", () => ({
+// Mock`next/navigation` pour les tests
+jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
+  usePathname: jest.fn(),
 }));
 
 
@@ -30,7 +32,7 @@ describe("Header Component", () => {
 
 const initialState = {
 	auth: {
-	  isAuthenticated: false, 
+	  isAuthenticated: false,
 	},
   };
 
