@@ -29,8 +29,8 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use(cors({
-  origin: 'http://localhost:3001', // Replace with the correct client URL
-  credentials: true // Allow credentials (cookies, authorization headers, etc.)
+  origin: 'http://localhost:3001',
+  credentials: true 
 }));
 
 

@@ -29,6 +29,14 @@ exports.signup = (req, res, next) => {
                 { expiresIn: "24h" }, // Set the token to expire in 24 hours
               );
 
+              res.cookie('token', token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'None',
+                path: '/',
+                maxAge: 24 * 60 * 60 * 1000, // 24 hours
+              });
+
               // Return the token to the frontend along with a success message
               res.status(201).json({
                 message: "User created successfully!",
@@ -89,11 +97,16 @@ exports.signin = (req, res, next) => {
 
 // Fonction de déconnexion (logout)
 exports.logout = (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
+  // const token = req.headers.authorization.split(" ")[1];
 
-  if (!token) {
-    return res.status(400).json({ message: "No token provided" });
-  }
-
+  // if (!token) {
+  //   return res.status(400).json({ message: "No token provided" });
+  // }
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'None',
+    path: '/',
+  });
   res.status(200).json({ message: "Logged out successfully!" });
 };

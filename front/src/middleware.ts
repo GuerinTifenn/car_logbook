@@ -3,8 +3,7 @@ import type { NextRequest } from 'next/server';
 
 // Middleware pour gérer l'accès aux pages en fonction des routes
 export function middleware(request: NextRequest) {
-const token = request.cookies.get('authToken');
-console.log(token)
+const token = request.cookies.get('token');
 if(!token) {
   return NextResponse.redirect(new URL('/login', request.url));
 }
@@ -20,4 +19,3 @@ export const config = {
     // '/dashboard/:path*',
   ],
 };
-

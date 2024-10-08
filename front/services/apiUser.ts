@@ -9,6 +9,7 @@ export const signup = async (userData: UserPayLoad): Promise<Response> => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: 'include',
       body: JSON.stringify(userData),
     });
 
@@ -36,7 +37,6 @@ export const signin = async (userData: UserSignInPayLoad): Promise<Response> => 
         "Content-Type": "application/json",
       },
       credentials: 'include',
-    // Important: Include credentials to allow HTTP-only cookie to be set
       body: JSON.stringify(userData),
     });
 
@@ -67,6 +67,7 @@ export const logout = async () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      credentials: 'include',
     });
 
     if (!response.ok) {
