@@ -9,6 +9,7 @@ import userIconBlack from "../public/assets/user_black.svg";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store/store";
 import { clearToken } from "../../store/authSlice";
+import { logout } from "../../services/apiUser";
 
 const Header: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -37,12 +38,17 @@ const Header: FC = () => {
   };
 
   // Gérer la déconnexion
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-
-    dispatch(clearToken()); // Déconnexion du state Redux
-    setIsOpen(false);
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await logout();
+      dispatch(clearToken()); // Déconnexion du state Redux
+      setIsOpen(false);
+      router.push("/login");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Log out error:", error.message); // Log the error
+      }
+    }
   };
 
   useEffect(() => {

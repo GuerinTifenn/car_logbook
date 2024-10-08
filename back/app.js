@@ -5,6 +5,8 @@ const app = express();
 const dbURI = `mongodb+srv://${userName}:${password}@${clusterName}/${dbName}?retryWrites=true&w=majority`;
 const bodyParser = require("body-parser");
 const userRoutes = require("./routes/user");
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 mongoose
   .connect(dbURI)
@@ -24,6 +26,13 @@ app.use((req, res, next) => {
   next();
 });
 app.use(bodyParser.json());
+app.use(cookieParser());
+
+app.use(cors({
+  origin: 'http://localhost:3001', // Replace with the correct client URL
+  credentials: true // Allow credentials (cookies, authorization headers, etc.)
+}));
+
 
 app.get("/", (req, res) => {
   res.send("GET request");

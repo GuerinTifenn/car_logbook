@@ -59,11 +59,23 @@ exports.signin = (req, res, next) => {
               error: { message: "Wrong password", code: "wrong password" },
             });
           }
+          const token = jwt.sign(
+            { userId: existingUser._id, email: existingUser.email },
+            "RANDOM_SECRET_TOKEN", // Use a secure secret key for signing the token
+            { expiresIn: "24h" }, // Set the token to expire in 24 hours
+          );
+
+          res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'None',
+            path: '/',
+            maxAge: 24 * 60 * 60 * 1000, // 24 hours
+          });
+
           res.status(200).json({
             userId: existingUser._id,
-            token: jwt.sign({ userId: existingUser._id, email: existingUser.email }, "RANDOM_SECRET_TOKEN", {
-              expiresIn: "24h",
-            }),
+            token: token,
           });
         })
         .catch((error) => {
@@ -74,3 +86,14 @@ exports.signin = (req, res, next) => {
       res.status(500).json({ error });
     });
   };
+
+// Fonction de déconnexion (logout)
+exports.logout = (req, res, next) => {
+  const token = req.headers.authorization.split(" ")[1];
+
+  if (!token) {
+    return res.status(400).json({ message: "No token provided" });
+  }
+
+  res.status(200).json({ message: "Logged out successfully!" });
+};

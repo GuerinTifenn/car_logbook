@@ -35,6 +35,8 @@ export const signin = async (userData: UserSignInPayLoad): Promise<Response> => 
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: 'include',
+    // Important: Include credentials to allow HTTP-only cookie to be set
       body: JSON.stringify(userData),
     });
 
@@ -52,3 +54,33 @@ export const signin = async (userData: UserSignInPayLoad): Promise<Response> => 
     throw new Error("Unknown error occurred");
   }
 };
+
+export const logout = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("No token found");
+    }
+    const response = await fetch(`${API_URL}/logout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Log out failed");
+    }
+    localStorage.removeItem("token");
+
+    return response; // Return the response for further handling
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error during log out:", error.message);
+      throw new Error(error.message || "Unknown error occurred during log out");
+    }
+    throw new Error("Unknown error occurred");
+  }
+}
