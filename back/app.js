@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const userRoutes = require("./routes/user");
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const auth = require("./middleware/auth");
 
 mongoose
   .connect(dbURI)
@@ -30,13 +31,17 @@ app.use(cookieParser());
 
 app.use(cors({
   origin: 'http://localhost:3001',
-  credentials: true 
+  credentials: true
 }));
 
 
 app.get("/", (req, res) => {
   res.send("GET request");
 });
+
+app.get('/dashboard', auth, (req, res) => {
+  res.status(200).json({message: 'dashboard access'})
+})
 
 app.use("/api/", userRoutes);
 
