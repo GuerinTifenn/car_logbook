@@ -34,7 +34,6 @@ export default function Register() {
       const data = await response.json();
       if (data.token) {
         dispatch(setToken(data.token)); // Stocke le token dans Redux
-        localStorage.setItem("token", data.token);
         router.push("/dashboard");
       }
       resetForm();

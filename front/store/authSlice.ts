@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import Cookies from 'js-cookie';
+
 
 // Définir le type pour l'état d'authentification
 interface AuthState {
@@ -6,11 +8,14 @@ interface AuthState {
   isAuthenticated: boolean;
 }
 
+const savedToken = typeof window !== 'undefined' ? Cookies.get('token') : null;
 // État initial
 const initialState: AuthState = {
-  token: null,
-  isAuthenticated: false,
+  token: savedToken ? savedToken : null,
+  isAuthenticated: savedToken ? true : false,
 };
+
+
 
 // Créez le slice pour l'authentification
 const authSlice = createSlice({
@@ -21,15 +26,16 @@ const authSlice = createSlice({
     setToken(state, action: PayloadAction<string>) {
       state.token = action.payload;
       state.isAuthenticated = true;
+      Cookies.set('token', action.payload, { expires: 7, secure: true });
     },
     // Définir une action pour déconnecter l'utilisateur
     clearToken(state) {
       state.token = null;
       state.isAuthenticated = false;
+      Cookies.remove('token');
     },
   },
 });
-
 // Exporter les actions générées par createSlice
 export const { setToken, clearToken } = authSlice.actions;
 

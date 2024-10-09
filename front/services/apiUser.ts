@@ -57,15 +57,10 @@ export const signin = async (userData: UserSignInPayLoad): Promise<Response> => 
 
 export const logout = async () => {
   try {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      throw new Error("No token found");
-    }
     const response = await fetch(`${API_URL}/logout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       credentials: 'include',
     });
@@ -74,7 +69,6 @@ export const logout = async () => {
       const errorData = await response.json();
       throw new Error(errorData.message || "Log out failed");
     }
-    localStorage.removeItem("token");
 
     return response; // Return the response for further handling
   } catch (error: unknown) {
