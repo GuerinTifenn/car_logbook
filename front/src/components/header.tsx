@@ -101,10 +101,10 @@ const Header: FC = () => {
                   </li>
                   <li>
                     <Link
-                      href="/my-cars"
+                      href="/dashboard"
                       className="block hover:bg-blue hover:text-white p-2"
                     >
-                      My Cars
+                      Dashboard
                     </Link>
                   </li>
                   <li>
