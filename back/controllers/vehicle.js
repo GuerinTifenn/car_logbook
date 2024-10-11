@@ -1,5 +1,6 @@
 // /back/controllers/vehicle.js
 const Vehicle = require("../models/vehicle");
+const mongoose = require("mongoose");
 
 // Création d'un véhicule
 exports.createVehicle = async (req, res) => {
@@ -28,8 +29,9 @@ exports.createVehicle = async (req, res) => {
 // Récupération de tous les véhicules
 exports.getVehiclesByUser = async (req, res) => {
   try {
-    const user_id = req.params.userId
-    const vehicles = await Vehicle.find({user_id});
+    const {userId} = req.params
+    const userObjectId = new mongoose.Types.ObjectId(String(userId));
+    const vehicles = await Vehicle.find({userId: userObjectId});
     res.status(200).json(vehicles);
   } catch (err) {
     res.status(500).json({ error: err.message });

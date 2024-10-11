@@ -2,12 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
 interface UserState {
-  userId: string | null;
+  userId: string ;
 }
 
 // État initial
 const initialState: UserState = {
-  userId: null
+  userId: ''
 };
 
 // Créez le slice pour l'authentification
