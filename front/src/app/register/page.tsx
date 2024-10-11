@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from 'react-redux';
 import { setToken } from '../../../store/authSlice';
 import { AppDispatch } from '../../../store/store';
+import { setUserId } from '../../../store/userSlice';
 
 export default function Register() {
   const [lastName, setLastName] = useState<string>("");
@@ -34,6 +35,7 @@ export default function Register() {
       const data = await response.json();
       if (data.token) {
         dispatch(setToken(data.token)); // Stocke le token dans Redux
+        dispatch(setUserId(data.userId));
         router.push("/dashboard");
       }
       resetForm();

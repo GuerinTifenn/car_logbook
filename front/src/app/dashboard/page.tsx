@@ -6,7 +6,7 @@ import carImage from "../../public/assets/car.jpeg";
 // import { fetchVehicles, Vehicle } from "../../../services/apiVehicle";
 
 const Dashboard: React.FC = () => {
-  // const router = useRouter();
+  const router = useRouter();
   // const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   // const [loading, setLoading] = useState(true);
   // const [error, setError] = useState<string | null>(null);
@@ -82,7 +82,7 @@ const Dashboard: React.FC = () => {
           <div className="card-footer mt-auto">
             <button
               className="bg-blue text-white rounded px-4 py-2 hover:bg-bluedark transition-colors"
-              // onClick={() => router.push("/register-car")}
+              onClick={() => router.push("/register-car")}
             >
               Start
             </button>

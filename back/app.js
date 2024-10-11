@@ -5,44 +5,51 @@ const app = express();
 const dbURI = `mongodb+srv://${userName}:${password}@${clusterName}/${dbName}?retryWrites=true&w=majority`;
 const bodyParser = require("body-parser");
 const userRoutes = require("./routes/user");
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const auth = require("./middleware/auth");
+const vehicleRoutes = require("./routes/vehicle");
 
 mongoose
   .connect(dbURI)
   .then(() => console.log("Connexion réussie"))
   .catch(() => console.log("Connexion échouée"));
 
+// Configuration des headers CORS
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization",
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
   );
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
   );
   next();
 });
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.use(cors({
-  origin: 'http://localhost:3001',
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3001",
+    credentials: true,
+  })
+);
 
-
+// Routes de base
 app.get("/", (req, res) => {
   res.send("GET request");
 });
 
-app.get('/dashboard', auth, (req, res) => {
-  res.status(200).json({message: 'dashboard access'})
-})
+app.get("/dashboard", auth, (req, res) => {
+  res.status(200).json({ message: "dashboard access" });
+});
 
+// Ajout des routes d'API
 app.use("/api/", userRoutes);
+app.use("/api/", vehicleRoutes);
 
 module.exports = app;

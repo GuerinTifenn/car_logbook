@@ -1,5 +1,6 @@
 import { combineReducers, configureStore} from '@reduxjs/toolkit';
 import authReducer from './authSlice'; // Importer le reducer d'authentification
+import userReducer from './userSlice'
 import { persistReducer } from 'redux-persist';
 import storage from './storage'
 import persistStore from 'redux-persist/es/persistStore';
@@ -7,11 +8,12 @@ import persistStore from 'redux-persist/es/persistStore';
 const persistConfig = {
   key: 'root',
   storage,
-  whiteList: ['auth'],
+  whiteList: ['auth', 'user'],
 }
 
 const rootReducer = combineReducers({
-  auth: authReducer
+  auth: authReducer,
+  user: userReducer
 })
 
 const persistedReducer = persistReducer<ReturnType<typeof rootReducer>>(persistConfig, rootReducer)
@@ -42,21 +44,10 @@ export const createPreloadedState = (
 ) => {
   return {
     auth: { ...store.getState().auth, ...customState.auth },
+    user: { ...store.getState().user, ...customState.user }
   };
 };
 export type AppDispatch = typeof store.dispatch;
 export type AppStore = ReturnType<typeof setupStore>;
 export type RootState = ReturnType<typeof store.getState>;
-// Configuration du store de base avec un reducer vide pour l'instant
-// const store = configureStore({
-//   reducer: {
-//     auth: authReducer,
-//   },});
 
-
-// // Exporter les types pour l'utilisation future
-// export type RootState = ReturnType<typeof store.getState>;
-// export type AppDispatch = typeof store.dispatch;
-
-// // Exporter le store pour l'utiliser dans le provider
-// export default store;
