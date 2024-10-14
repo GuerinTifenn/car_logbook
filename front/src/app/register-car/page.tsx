@@ -29,7 +29,6 @@ const RegisterCar: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log('useriD', userId)
 
     // Construction du formulaire avec FormData
     const formData = {

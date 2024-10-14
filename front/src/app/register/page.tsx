@@ -14,6 +14,7 @@ export default function Register() {
   const [firstName, setFirstName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const isAdmin: boolean = false
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -29,6 +30,7 @@ export default function Register() {
       first_name: firstName,
       email,
       password,
+      is_admin: isAdmin
     };
     try {
       const response = await signup(userData);

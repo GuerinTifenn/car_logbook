@@ -4,6 +4,7 @@ export type User = {
   first_name: string;
   email: string;
   password: string;
+  is_admin: boolean;
 };
 
 export type UserPayLoad = {
@@ -11,6 +12,7 @@ export type UserPayLoad = {
   first_name: string;
   email: string;
   password: string;
+  is_admin: boolean;
 };
 
 export type UserSignInPayLoad = {

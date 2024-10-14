@@ -18,6 +18,7 @@ exports.signup = (req, res, next) => {
             first_name: req.body.first_name,
             email: req.body.email,
             password: hash,
+            is_admin: req.body.is_admin
           });
           user
             .save()
@@ -42,6 +43,7 @@ exports.signup = (req, res, next) => {
                 message: "User created successfully!",
                 token: token, // Send the token back
                 userId: user._id,
+                userAdmin: user.is_admin
               });
             })
             .catch((error) => res.status(400).json({ error }));
@@ -84,6 +86,7 @@ exports.signin = (req, res, next) => {
           res.status(200).json({
             userId: existingUser._id,
             token: token,
+            userAdmin: existingUser.is_admin
           });
         })
         .catch((error) => {
@@ -97,7 +100,7 @@ exports.signin = (req, res, next) => {
 
 // Fonction de déconnexion (logout)
 exports.logout = (req, res, next) => {
-  
+
   res.clearCookie('token', {
     httpOnly: true,
     secure: true,
@@ -106,3 +109,4 @@ exports.logout = (req, res, next) => {
   });
   res.status(200).json({ message: "Logged out successfully!" });
 };
+

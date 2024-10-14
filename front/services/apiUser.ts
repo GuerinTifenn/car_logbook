@@ -79,3 +79,4 @@ export const logout = async () => {
     throw new Error("Unknown error occurred");
   }
 }
+
