@@ -10,11 +10,12 @@ import { RootState } from "../../../store/store";
 const RegisterCar: React.FC = () => {
   const [carBrand, setCarBrand] = useState<string>("");
   const [model, setModel] = useState<string>("");
-  const [firstRegistrationDate, setFirstRegistrationDate] = useState<string>("");
+  const [firstRegistrationDate, setFirstRegistrationDate] =
+    useState<string>("");
   const [registration, setRegistration] = useState<string>("");
   const [vin, setVin] = useState<string>("");
 
-  const userId = useSelector((state: RootState) => state.user.userId)
+  const userId = useSelector((state: RootState) => state.user.userId);
   // const [file, setFile] = useState<File | null>(null);
   const router = useRouter();
 
@@ -29,7 +30,6 @@ const RegisterCar: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-
     // Construction du formulaire avec FormData
     const formData = {
       carBrand,
@@ -37,8 +37,8 @@ const RegisterCar: React.FC = () => {
       firstRegistrationDate,
       registration,
       vin,
-      userId
-    }
+      userId,
+    };
     // if (file) formData.append("file", file); // Ajoute le fichier s'il est disponible
 
     try {
@@ -99,7 +99,9 @@ const RegisterCar: React.FC = () => {
               {/* Ligne 2 : First Registration Date et Registration */}
               <div className="flex flex-col lg:flex-row gap-5">
                 <div className="relative flex flex-col gap-1.5 w-full">
-                  <label htmlFor="firstRegistrationDate">First Registration Date</label>
+                  <label htmlFor="firstRegistrationDate">
+                    First Registration Date
+                  </label>
                   <input
                     className="border border-1 px-2 py-2.5 w-full"
                     type="date"
@@ -165,7 +167,9 @@ const RegisterCar: React.FC = () => {
               <div className="mt-3">
                 <button
                   className={`${
-                    isFormValid() ? "bg-blue hover:bg-bluedark" : "bg-gray-300 cursor-not-allowed"
+                    isFormValid()
+                      ? "bg-blue hover:bg-bluedark"
+                      : "bg-gray-300 cursor-not-allowed"
                   } px-2 py-2.5 w-full text-white`}
                   type="submit"
                   // disabled={!isFormValid()}
@@ -177,7 +181,12 @@ const RegisterCar: React.FC = () => {
           </form>
         </div>
         <div className="w-full lg:w-6/12 max-w-[50vw] mx-auto xl:mx-0">
-          <Image src={immatImage} alt="Registration image" className="w-full h-auto" priority />
+          <Image
+            src={immatImage}
+            alt="Registration image"
+            className="w-full h-auto"
+            priority
+          />
         </div>
       </div>
     </section>

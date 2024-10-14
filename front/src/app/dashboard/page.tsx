@@ -28,6 +28,10 @@ const Dashboard: React.FC = () => {
     fetchAllVehicles();
   }, [userId]);
 
+  const goToServices = (vehicleID: string) => {
+    router.push(`/services?vehicleId=${vehicleID}`);
+  };
+
   return (
     <section className="p-6">
       <h1 className="text-3xl font-bold text-center my-8">
@@ -44,7 +48,7 @@ const Dashboard: React.FC = () => {
           {vehicles.length > 0 &&
             vehicles.map((vehicle) => (
               <div
-                key={vehicle.userId}
+                key={vehicle._id}
                 className="border border-gray-200 rounded-lg p-6 shadow-lg text-center hover:shadow-2xl transition-shadow duration-200 flex flex-col justify-between h-full"
               >
                 <div className="flex-grow">
@@ -65,7 +69,7 @@ const Dashboard: React.FC = () => {
                 <div className="card-footer mt-auto">
                   <button
                     className="bg-blue text-white rounded px-4 py-2 hover:bg-bluedark transition-colors"
-                    onClick={() => router.push(`/services`)}
+                    onClick={() => goToServices(vehicle._id)}
                   >
                     View Services
                   </button>

@@ -20,9 +20,15 @@ exports.createVehicle = async (req, res) => {
     });
 
     await vehicle.save();
-    res.status(201).json(vehicle);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(201).json({
+      message: "Vehicle created successfully!",
+      vehicleId: vehicle._id,
+      vehicle: vehicle,
+    });
+
+  } catch (error) {
+    console.error("Vehicle registration error:", error);
+    res.status(400).json({ error: error.message });
   }
 };
 

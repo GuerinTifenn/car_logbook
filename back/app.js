@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const auth = require("./middleware/auth");
 const vehicleRoutes = require("./routes/vehicle");
+const serviceRoutes = require("./routes/service")
 
 mongoose
   .connect(dbURI)
@@ -51,5 +52,6 @@ app.get("/dashboard", auth, (req, res) => {
 // Ajout des routes d'API
 app.use("/api/", userRoutes);
 app.use("/api/", vehicleRoutes);
+app.use("/api/", serviceRoutes)
 
 module.exports = app;

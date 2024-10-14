@@ -3,14 +3,18 @@ import React, { useState } from "react";
 import Image from "next/image";
 import addService from "../../public/assets/addservice.jpg";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { registerServices } from "../../../services/apiService";
 
 const AddService: React.FC = () => {
-  const [Date, setDate] = useState<string>("");
-  const [Description, setDescription] = useState<string>("");
-  const [Price, setPrice] = useState<string>("");
-  const [Kilometers, setKilometers] = useState<string>("");
+  const [interventionDate, setDate] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [price, setPrice] = useState<number | undefined>(undefined);
+  const [kilometers, setKilometers] = useState<number | undefined>(undefined);
   const [file, setFile] = useState<File | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const vehicleId: string = searchParams.get("vehicleId") || "";
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -18,30 +22,34 @@ const AddService: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      Date,
-      Description,
-      Price,
-      Kilometers,
-      file,
-    });
 
-    // Afficher la pop-up de confirmation
-    alert("The service has been successfully registered!");
+    const formData = {
+      interventionDate,
+      description,
+      kilometers,
+      price,
+      vehicleId,
+    };
 
-    // Rediriger vers la page /my-cars
-    router.push("/interventions");
+    try {
+      await registerServices(vehicleId, formData);
+      alert("The intervention has been successfully registered!");
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Failed to register the intervention", error);
+      alert("Failed to register the intervention. Please try again.");
+    }
   };
 
   const isFormValid = (): boolean => {
     return (
-      Date.length > 1 &&
-      Description.length > 1 &&
-      Price.length > 1 &&
-      Kilometers.length > 1 &&
-      file !== null
+      interventionDate.length > 1 &&
+      description.length > 1 &&
+      kilometers !== undefined &&
+      kilometers > 0
+      // file !== null
     );
   };
 
@@ -49,7 +57,7 @@ const AddService: React.FC = () => {
     <section>
       <div className="m-2 xl:m-5 flex flex-col xl:flex-row gap-5">
         <div className="w-full xl:w-6/12 gap-5 flex flex-col">
-          <h1 className="text-4xl text-center my-5">Add a intervention</h1>
+          <h1 className="text-4xl text-center my-5">Add an intervention</h1>
           <form>
             <fieldset className="xl:m-12 flex flex-col gap-5">
               {/* Ligne 1 : Date */}
@@ -57,11 +65,11 @@ const AddService: React.FC = () => {
                 <label htmlFor="date">Date</label>
                 <input
                   className={`border border-1 px-2 py-2.5 w-full focus:outline-none focus:ring-2 focus:ring-blue ${
-                    !Date ? "text-gray-400" : "text-black"
+                    !interventionDate ? "text-gray-400" : "text-black"
                   }`}
                   type="date"
-                  name="Date"
-                  value={Date}
+                  name="InterventionDate"
+                  value={interventionDate}
                   onChange={(e) => setDate(e.target.value)}
                 />
               </div>
@@ -73,7 +81,7 @@ const AddService: React.FC = () => {
                   className="border border-1 px-2 py-2.5"
                   type="text"
                   name="description"
-                  value={Description}
+                  value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Enter the Description"
                 />
@@ -84,10 +92,10 @@ const AddService: React.FC = () => {
                 <label htmlFor="kilometers">Kilometers</label>
                 <input
                   className="border border-1 px-2 py-2.5 w-full"
-                  type="text"
+                  type="number"
                   name="kilometers"
-                  value={Kilometers}
-                  onChange={(e) => setKilometers(e.target.value)}
+                  value={kilometers}
+                  onChange={(e) => setKilometers(Number(e.target.value))}
                   placeholder="Enter kilometers"
                 />
               </div>
@@ -97,10 +105,10 @@ const AddService: React.FC = () => {
                 <label htmlFor="price">Price</label>
                 <input
                   className="border border-1 px-2 py-2.5 w-full"
-                  type="text"
+                  type="number"
                   name="price"
-                  value={Price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  value={price}
+                  onChange={(e) => setPrice(Number(e.target.value))}
                   placeholder="Enter price"
                 />
               </div>

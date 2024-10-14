@@ -9,7 +9,7 @@ const vehicleSchema = new mongoose.Schema({
   registration: { type: String, required: true },
   vin: { type: String, required: true, unique: true },
   // fileName: { type: String }, // Champ optionnel pour le nom de fichier
-  userId: {type: Schema.Types.ObjectId, ref: "User", required: true, unique: true}
+  userId: {type: Schema.Types.ObjectId, ref: "User", required: true}
 });
 
 module.exports = mongoose.model("Vehicle", vehicleSchema);
