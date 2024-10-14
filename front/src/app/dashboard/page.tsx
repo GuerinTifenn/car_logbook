@@ -26,7 +26,7 @@ const Dashboard: React.FC = () => {
       }
     };
     fetchAllVehicles();
-  }, []);
+  }, [userId]);
 
   return (
     <section className="p-6">

@@ -9,6 +9,7 @@ import userIconBlack from "../public/assets/user_black.svg";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store/store";
 import { clearToken } from "../../store/authSlice";
+import { clearUser } from "../../store/userSlice"
 import { logout } from "../../services/apiUser";
 
 const Header: FC = () => {
@@ -43,6 +44,7 @@ const Header: FC = () => {
     try {
       await logout();
       dispatch(clearToken()); // Déconnexion du state Redux
+      dispatch(clearUser())
       setIsOpen(false);
       router.push("/login");
     } catch (error: unknown) {

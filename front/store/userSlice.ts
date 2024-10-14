@@ -24,10 +24,14 @@ const userSlice = createSlice({
 	setUserAdminStatus(state, action: PayloadAction<boolean>) {
 		state.userAdminStatus = action.payload;
 	},
+	clearUser(state) {
+		state.userId = '';
+		state.userAdminStatus = false;
+	  },
   },
 });
 // Exporter les actions générées par createSlice
-export const { setUserId, setUserAdminStatus } = userSlice.actions;
+export const { setUserId, setUserAdminStatus, clearUser } = userSlice.actions;
 
 // Exporter le reducer pour l'ajouter au store
 export default userSlice.reducer;
