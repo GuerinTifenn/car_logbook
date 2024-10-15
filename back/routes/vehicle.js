@@ -7,5 +7,6 @@ const auth = require("../middleware/auth");
 // router.post("/createVehicle", upload.single("file"), vehicleController.createVehicle); // Route POST avec le middleware d'upload de fichier
 router.post("/vehicle/create", auth, vehicleController.createVehicle);
 router.get("/vehicles/:userId", auth, vehicleController.getVehiclesByUser);
+router.get("/vehicle/:vehicleId", auth, vehicleController.getVehicleById);
 
 module.exports = router;

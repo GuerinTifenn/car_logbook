@@ -2,12 +2,15 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { fetchVehicleServices } from "../../../services/apiService";
+import { fetchVehicleById } from "../../../services/apiVehicle";
 import { Services } from "../../../types/services";
+import { Vehicle } from "../../../types/vehicle";
 import { useSearchParams } from "next/navigation";
 
 const ServicesPage: React.FC = () => {
   const router = useRouter();
   const [services, setServices] = useState<Services[]>([]);
+  const [vehicle, setVehicleInfos] = useState<Vehicle | null>(null);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const vehicleId: string = searchParams.get("vehicleId") || "";
@@ -26,6 +29,22 @@ const ServicesPage: React.FC = () => {
     fetchAllServices();
   }, [vehicleId]);
 
+  useEffect(() => {
+    if (vehicleId) {
+      const fetchVehicleInfos = async () => {
+        try {
+          const vehicleInfos = await fetchVehicleById(vehicleId);
+          setVehicleInfos(vehicleInfos);
+        } catch (error) {
+          console.error("Failed to load services. Please try again later.");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchVehicleInfos();
+    }
+  }, [vehicleId]);
+
   const goToAddServices = (vehicleID: string) => {
     router.push(`/add-service?vehicleId=${vehicleID}`);
   };
@@ -33,6 +52,20 @@ const ServicesPage: React.FC = () => {
   return (
     <section className="p-6">
       <h1 className="text-3xl font-bold text-center my-8">Interventions</h1>
+      <div className="flex justify-center">
+      <div className="w-full xl:w-6/12">
+        {vehicle ? (
+
+            <h2 className="text-1xl font-bold">
+              {vehicle.carBrand} {vehicle.model}
+            </h2>
+
+        ) : (
+          <div></div>
+        )}
+      </div>
+      </div>
+
 
       {loading ? (
         // Affichage de l'état de chargement

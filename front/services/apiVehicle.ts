@@ -34,3 +34,18 @@ const apiUrl = "http://localhost:3000/api";
 	}
 	return response.json();
   };
+
+  export const fetchVehicleById = async (vehicleId: string): Promise<Vehicle> => {
+	const response = await fetch(`${apiUrl}/vehicle/${vehicleId}`, {
+		method: "GET",
+		headers: {
+		  "Content-Type": "application/json",
+		},
+		credentials: 'include',
+	  });
+
+	if (!response.ok) {
+	  throw new Error("Failed to fetch vehicle information");
+	}
+	return response.json();
+  };

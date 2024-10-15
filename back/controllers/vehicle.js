@@ -42,3 +42,20 @@ exports.getVehiclesByUser = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.getVehicleById = async (req, res) => {
+  try {
+    const { vehicleId } = req.params;
+    const vehicle = await Vehicle.findById(vehicleId);
+
+    if (!vehicle) {
+      return res.status(404).json({ message: 'Vehicle not found' });
+    }
+
+    res.status(200).json(vehicle);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
