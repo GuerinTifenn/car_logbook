@@ -49,6 +49,10 @@ app.get("/dashboard", auth, (req, res) => {
   res.status(200).json({ message: "dashboard access" });
 });
 
+app.get("/services/:vehicleId", auth, (req, res) => {
+  res.status(200).json({ message: "services access" });
+});
+
 // Ajout des routes d'API
 app.use("/api/", userRoutes);
 app.use("/api/", vehicleRoutes);

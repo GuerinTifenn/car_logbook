@@ -1,4 +1,5 @@
 const Service = require("../models/service");
+const mongoose = require("mongoose");
 
 exports.createService = async (req, res) => {
   try {
@@ -19,5 +20,17 @@ exports.createService = async (req, res) => {
     res.status(201).json(service);
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+};
+
+// Récupération de tous les services
+exports.getServicesByVehicle = async (req, res) => {
+  try {
+    const {vehicleId} = req.params
+    const vehicleObjectId = new mongoose.Types.ObjectId(String(vehicleId));
+    const Services = await Service.find({vehicleId: vehicleObjectId});
+    res.status(200).json(Services);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };

@@ -36,7 +36,7 @@ const AddService: React.FC = () => {
     try {
       await registerServices(vehicleId, formData);
       alert("The intervention has been successfully registered!");
-      router.push("/dashboard");
+      router.push(`/services?vehicleId=${vehicleId}`);
     } catch (error) {
       console.error("Failed to register the intervention", error);
       alert("Failed to register the intervention. Please try again.");

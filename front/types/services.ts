@@ -8,6 +8,7 @@ export type ServicePayLoad = {
   };
 
 export type Services = {
+	_id: string,
 	interventionDate: string;
 	description: string;
 	kilometers: number;

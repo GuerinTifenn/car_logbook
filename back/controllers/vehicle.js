@@ -1,4 +1,3 @@
-// /back/controllers/vehicle.js
 const Vehicle = require("../models/vehicle");
 const mongoose = require("mongoose");
 

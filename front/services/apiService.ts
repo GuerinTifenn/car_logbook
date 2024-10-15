@@ -15,7 +15,22 @@ const apiUrl = "http://localhost:3000/api";
 		);
 
 	if (!response.ok) {
-	  throw new Error("Failed to register vehicles");
+	  throw new Error("Failed to register services");
+	}
+	return response.json();
+  };
+
+  export const fetchVehicleServices = async (vehicleId: string): Promise<Services[]> => {
+	const response = await fetch(`${apiUrl}/services/${vehicleId}`, {
+		method: "GET",
+		headers: {
+		  "Content-Type": "application/json",
+		},
+		credentials: 'include',
+	  });
+
+	if (!response.ok) {
+	  throw new Error("Failed to fetch services");
 	}
 	return response.json();
   };

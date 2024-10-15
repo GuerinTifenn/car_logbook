@@ -6,6 +6,6 @@ const serviceController = require("../controllers/service");
 // Routes pour les services
 
 router.post("/service/:vehicleId", auth, serviceController.createService);
-
+router.get("/services/:vehicleId", auth, serviceController.getServicesByVehicle)
 
 module.exports = router;
