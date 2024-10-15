@@ -52,7 +52,7 @@ const Dashboard: React.FC = () => {
                 className="border border-gray-200 rounded-lg p-6 shadow-lg text-center hover:shadow-2xl transition-shadow duration-200 flex flex-col justify-between h-full"
               >
                 <div className="flex-grow">
-                  <h2 className="text-2xl font-semibold mb-4">
+                  <h2 className="text-2xl font-semibold mb-4 truncate">
                     {vehicle.carBrand} {vehicle.model}
                   </h2>
                   <p className="text-lg mb-2">

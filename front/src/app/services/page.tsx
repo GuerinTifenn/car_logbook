@@ -14,6 +14,7 @@ const ServicesPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const vehicleId: string = searchParams.get("vehicleId") || "";
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchAllServices = async () => {
@@ -49,6 +50,10 @@ const ServicesPage: React.FC = () => {
     router.push(`/add-service?vehicleId=${vehicleID}`);
   };
 
+  const filteredServices = services.filter((service) =>
+    service.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <section className="p-6">
       <h1 className="text-3xl font-bold text-center my-8">Interventions</h1>
@@ -63,6 +68,15 @@ const ServicesPage: React.FC = () => {
         ) : (
           <div></div>
         )}
+        <div className="flex justify-center mb-6">
+        <input
+          type="text"
+          placeholder="🔍 Search by description"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border rounded-lg p-2 w-full max-w-sm"
+        />
+      </div>
       </div>
       </div>
 
@@ -80,12 +94,12 @@ const ServicesPage: React.FC = () => {
             </div>
           ) : (
             // Afficher les cartes de service si elles existent
-            services.map((service) => (
+            filteredServices.map((service) => (
               <div key={service._id} className="w-full xl:w-6/12">
                 <ul className="border border-gray-200 rounded-lg p-6 shadow-lg text-center hover:shadow-2xl transition-shadow duration-200 flex flex-col justify-between h-full">
                   <li>
                     <div className="flex-grow">
-                      <h2 className="text-2xl font-semibold mb-4">
+                      <h2 className="text-2xl font-semibold mb-4 truncate">
                         {service.description}
                       </h2>
                       <p className="text-lg mb-2">{service.interventionDate}</p>
