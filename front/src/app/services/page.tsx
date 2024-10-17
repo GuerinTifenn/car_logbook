@@ -128,7 +128,7 @@ const ServicesPage: React.FC = () => {
                         </button>
                       </div>
                     </div>
-                    <hr className="border my-3 border-black" />
+                    <hr className="border my-3 border-grey" />
                     <div className="">
                       <h2 className="text-2xl font-semibold mb-4 truncate text-start">
                         {service.description}
