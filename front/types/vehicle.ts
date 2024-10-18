@@ -5,7 +5,7 @@ export type VehiclePayLoad = {
 	registration: string;
 	vin: string;
 	userId: string | null;
-	// fileName: string; // Ajout du nom de fichier (si disponible)
+	fileName: string;
   };
 
 export type Vehicles = {
@@ -17,7 +17,7 @@ export type Vehicles = {
 	vin: string;
 	userId: string;
 	vehicleId: string
-	// fileName:
+	// fileName: string
 };
 
 export type Vehicle = {
@@ -28,5 +28,5 @@ export type Vehicle = {
 	vin: string;
 	userId: string;
 	vehicleId: string
-	// fileName:
+	fileName: string
 };

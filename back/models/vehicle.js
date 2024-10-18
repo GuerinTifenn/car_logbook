@@ -8,7 +8,7 @@ const vehicleSchema = new mongoose.Schema({
   firstRegistrationDate: { type: Date, required: true },
   registration: { type: String, required: true },
   vin: { type: String, required: true, unique: true },
-  // fileName: { type: String }, // Champ optionnel pour le nom de fichier
+  fileName: { type: String, required: true },
   userId: {type: Schema.Types.ObjectId, ref: "User", required: true}
 });
 

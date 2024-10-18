@@ -9,6 +9,8 @@ import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import pencilIcon from "../../public/assets/pencil-edit.svg";
 import trashBinIcon from "../../public/assets/trash-bin.svg";
+import calendarIcon from "../../public/assets/calendar.svg";
+
 import { formatDate } from "@/utils/date";
 
 const ServicesPage: React.FC = () => {
@@ -110,7 +112,7 @@ const ServicesPage: React.FC = () => {
                     <div className="flex justify-between">
                       <div className="flex items-center gap-3">
                         {/* TODO : Update with calendar icon */}
-                        <Image src={pencilIcon} alt="edit" width={24}></Image>
+                        <Image src={calendarIcon} alt="date" width={24}></Image>
                         <span className="">
                           {formatDate(service.interventionDate)}
                         </span>
@@ -138,7 +140,9 @@ const ServicesPage: React.FC = () => {
                           <p className="text-lg mb-2">
                             {service.kilometers} Km
                           </p>
-                          <p className="text-lg mb-4">{service.price} €</p>
+                          <p className="text-lg mb-4">
+                            {service.price ? `${service.price} €` : ""}
+                          </p>
                         </div>
                         <div>
                           {/* <Image
@@ -167,7 +171,7 @@ const ServicesPage: React.FC = () => {
           className="bg-blue text-white rounded px-4 py-2 hover:bg-bluedark transition-colors"
           onClick={() => goToAddServices(vehicleId)}
         >
-          Add Service
+          + Add Service
         </button>
       </div>
     </section>

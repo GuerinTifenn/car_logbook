@@ -56,7 +56,7 @@ const AddService: React.FC = () => {
   return (
     <section>
       <div className="m-2 xl:m-5 flex flex-col xl:flex-row gap-5">
-        <div className="w-full xl:w-6/12 gap-5 flex flex-col">
+        <div className="w-full xl:w-6/12 gap-5 xl:gap-0 flex flex-col">
           <h1 className="text-4xl text-center my-5">Add an intervention</h1>
           <form>
             <fieldset className="xl:m-12 flex flex-col gap-5">

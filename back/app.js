@@ -10,6 +10,7 @@ const cors = require("cors");
 const auth = require("./middleware/auth");
 const vehicleRoutes = require("./routes/vehicle");
 const serviceRoutes = require("./routes/service")
+const path = require("path");
 
 mongoose
   .connect(dbURI)
@@ -52,6 +53,8 @@ app.get("/dashboard", auth, (req, res) => {
 app.get("/services/:vehicleId", auth, (req, res) => {
   res.status(200).json({ message: "services access" });
 });
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 // Ajout des routes d'API
 app.use("/api/", userRoutes);

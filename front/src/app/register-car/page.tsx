@@ -16,30 +16,45 @@ const RegisterCar: React.FC = () => {
   const [vin, setVin] = useState<string>("");
 
   const userId = useSelector((state: RootState) => state.user.userId);
-  // const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const router = useRouter();
 
   // // Gestion de l'upload de fichier
-  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files && e.target.files.length > 0) {
-  //     setFile(e.target.files[0]);
-  //   }
-  // };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+    }
+  };
 
   // Gestion de la soumission du formulaire
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Construction du formulaire avec FormData
-    const formData = {
-      carBrand,
-      model,
-      firstRegistrationDate,
-      registration,
-      vin,
-      userId,
-    };
-    // if (file) formData.append("file", file); // Ajoute le fichier s'il est disponible
+    // const formData = {
+    //   carBrand,
+    //   model,
+    //   firstRegistrationDate,
+    //   registration,
+    //   vin,
+    //   userId,
+    // };
+
+    const formData = new FormData();
+
+    // Append the vehicle data to the FormData object
+    formData.append("carBrand", carBrand);
+    formData.append("model", model);
+    formData.append("firstRegistrationDate", firstRegistrationDate);
+    formData.append("registration", registration);
+    formData.append("vin", vin);
+    formData.append("userId", userId); // Assuming userId is a string or number
+
+    // Append the file to FormData (assuming `file` is a File object)
+    if (file) {
+        formData.append("file", file); // Ensure file exists before appending
+    }
+
 
     try {
       await registerVehicles(formData);
@@ -66,7 +81,7 @@ const RegisterCar: React.FC = () => {
   return (
     <section>
       <div className="m-2 xl:m-5 flex flex-col xl:flex-row gap-5">
-        <div className="w-full xl:w-6/12 gap-5 flex flex-col">
+        <div className="w-full xl:w-6/12 gap-5 xl:gap-0 flex flex-col">
           <h1 className="text-4xl text-center my-5">Register Your Car</h1>
           <form onSubmit={handleSubmit}>
             <fieldset className="xl:m-12 flex flex-col gap-5">
@@ -140,16 +155,23 @@ const RegisterCar: React.FC = () => {
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="file">Upload file</label>
                 <div className="flex items-center gap-2">
+                  {/* <input
+                    name="file"
+                    type="file"
+                    onChange={handleFileChange}
+                    className={`border border-gray-300 px-3 py-2 w-full`}
+                    placeholder="No file selected"
+                  /> */}
                   <input
                     id="file"
                     name="file"
                     type="file"
-                    // onChange={handleFileChange}
+                    onChange={handleFileChange}
                     className="hidden"
                   />
                   <input
                     type="text"
-                    // value={file?.name || "No file chosen"}
+                    value={file?.name || "No file chosen"}
                     readOnly
                     className={`border border-gray-300 px-3 py-2 w-full`}
                     placeholder="No file selected"

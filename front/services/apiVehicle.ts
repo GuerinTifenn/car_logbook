@@ -1,23 +1,35 @@
-import { type VehiclePayLoad, type Vehicles, type Vehicle } from "../types/vehicle";
+import { type Vehicles, type Vehicle } from "../types/vehicle";
 
 const apiUrl = "http://localhost:3000/api";
 
-  export const registerVehicles = async (vehicleData: VehiclePayLoad): Promise<Vehicle> => {
-	const response = await fetch(`${apiUrl}/vehicle/create`,
-		{
-			method: "POST",
-			headers: {
-			  "Content-Type": "application/json",
-			},
-			credentials: 'include',
-			body: JSON.stringify(vehicleData),
-		  }
-		);
+  export const registerVehicles = async (formData: FormData): Promise<Vehicle> => {
+
+	const response = await fetch(`${apiUrl}/vehicle/create`, {
+		method: "POST",
+		credentials: 'include',
+		body: formData, // Send FormData directly
+	});
 
 	if (!response.ok) {
-	  throw new Error("Failed to register vehicles");
+		throw new Error("Failed to register vehicle");
 	}
-	return response.json();
+
+	return response.json(); // Return the JSON response
+	// const response = await fetch(`${apiUrl}/vehicle/create`,
+	// 	{
+	// 		method: "POST",
+	// 		headers: {
+	// 		  "Content-Type": "application/json",
+	// 		},
+	// 		credentials: 'include',
+	// 		body: JSON.stringify(vehicleData),
+	// 	  }
+	// 	);
+
+	// if (!response.ok) {
+	//   throw new Error("Failed to register vehicles");
+	// }
+	// return response.json();
   };
 
   export const fetchUserVehicles = async (userId: string): Promise<Vehicles[]> => {

@@ -1,12 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import carImage from "../../public/assets/car.jpeg";
+// import Image from "next/image";
+// import carImage from "../../public/assets/car.jpeg";
 import { fetchUserVehicles } from "../../../services/apiVehicle";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { Vehicles } from "../../../types/vehicle";
+import { formatDateFR } from "@/utils/date";
 
 const Dashboard: React.FC = () => {
   const router = useRouter();
@@ -55,9 +56,13 @@ const Dashboard: React.FC = () => {
                   <h2 className="text-2xl font-semibold mb-4 truncate">
                     {vehicle.carBrand} {vehicle.model}
                   </h2>
-                  <p className="text-lg mb-2">
+                  <hr className="border my-3 border-grey" />
+                  <span className="text-lg mb-2">
+                          {formatDateFR(vehicle.firstRegistrationDate)}
+                        </span>
+                  {/* <p className="text-lg mb-2">
                     First Registration Date: {vehicle.firstRegistrationDate}
-                  </p>
+                  </p> */}
                   <p className="text-lg mb-2">
                     Registration: {vehicle.registration}
                   </p>
@@ -80,13 +85,14 @@ const Dashboard: React.FC = () => {
           {/* Afficher la carte pour ajouter un nouveau véhicule */}
           <div className="border border-gray-200 rounded-lg p-6 shadow-lg text-center hover:shadow-2xl transition-shadow duration-200 flex flex-col justify-between h-full">
             <div className="flex-grow">
-              <Image
+              {/* <Image
                 src={carImage}
                 alt="Add a new car"
                 className="w-full h-32 object-cover rounded-lg mb-4"
                 priority
-              />
+              /> */}
               <h2 className="text-2xl font-semibold mb-4">Add a new car</h2>
+              <hr className="border my-3 border-grey" />
               <p className="text-lg mb-4">
                 Get started by registering your vehicle to keep all your
                 maintenance records in one place.
