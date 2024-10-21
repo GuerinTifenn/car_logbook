@@ -23,21 +23,23 @@ const ServicesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const fetchAllServices = async () => {
-      try {
-        const fetchedServices = await fetchVehicleServices(vehicleId);
-        setServices(fetchedServices);
-      } catch (error) {
-        console.error("Failed to load services. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAllServices();
+    if (vehicleId) {
+      const fetchAllServices = async () => {
+        try {
+          const fetchedServices = await fetchVehicleServices(vehicleId);
+          setServices(fetchedServices);
+        } catch (error) {
+          console.error("Failed to load services. Please try again later.");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchAllServices();
+    }
   }, [vehicleId]);
 
   useEffect(() => {
-    if (vehicleId) {
+    if (vehicleId && !loading) {
       const fetchVehicleInfos = async () => {
         try {
           const vehicleInfos = await fetchVehicleById(vehicleId);
@@ -50,7 +52,12 @@ const ServicesPage: React.FC = () => {
       };
       fetchVehicleInfos();
     }
-  }, [vehicleId]);
+  }, [vehicleId, loading]);
+
+  const handleViewInvoice = (fileUrl: string) => {
+    // Open the invoice file in a new tab
+    window.open(fileUrl, "_blank"); // Opens in a new tab
+  };
 
   const goToAddServices = (vehicleID: string) => {
     router.push(`/add-service?vehicleId=${vehicleID}`);
@@ -154,7 +161,10 @@ const ServicesPage: React.FC = () => {
                       </div>
                     </div>
                     <div className="card-footer mt-auto">
-                      <button className="bg-blue text-white rounded px-4 py-2 hover:bg-bluedark transition-colors">
+                      <button
+                        className="bg-blue text-white rounded px-4 py-2 hover:bg-bluedark transition-colors"
+                        onClick={() => handleViewInvoice(service.fileName)}
+                      >
                         View Invoice
                       </button>
                     </div>

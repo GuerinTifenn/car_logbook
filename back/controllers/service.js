@@ -3,23 +3,23 @@ const mongoose = require("mongoose");
 
 exports.createService = async (req, res) => {
   try {
-    const { interventionDate, description, kilometers, price } = req.body;
+    const serviceObject = req.body
     const vehicleId = req.body.vehicleId
-    // const fileName = req.file ? req.file.filename : undefined; // Récupération du nom de fichier si uploadé
 
     const service = new Service({
-      interventionDate,
-      description,
-      kilometers,
-      price,
-      // fileName, // Ajout du nom de fichier dans la base de données
-      vehicleId // associate service with the vehicle
-    });
+      ...serviceObject,
+      userId: req.auth.userId,
+      vehicleId,
+      fileName: `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}` // File URL
+    })
 
     await service.save();
-    res.status(201).json(service);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+
+      // Send a success response if the vehicle is saved successfully
+      res.status(201).json({ message: 'Service saved successfully!' });
+  } catch (error) {
+     console.error("Service registration error:", error);
+    res.status(400).json({ error: error.message });
   }
 };
 

@@ -14,6 +14,7 @@ const RegisterCar: React.FC = () => {
     useState<string>("");
   const [registration, setRegistration] = useState<string>("");
   const [vin, setVin] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const userId = useSelector((state: RootState) => state.user.userId);
   const [file, setFile] = useState<File | null>(null);
@@ -23,22 +24,13 @@ const RegisterCar: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
+      setErrorMessage(null); // Reset any previous error
     }
   };
 
   // Gestion de la soumission du formulaire
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Construction du formulaire avec FormData
-    // const formData = {
-    //   carBrand,
-    //   model,
-    //   firstRegistrationDate,
-    //   registration,
-    //   vin,
-    //   userId,
-    // };
 
     const formData = new FormData();
 
@@ -52,17 +44,30 @@ const RegisterCar: React.FC = () => {
 
     // Append the file to FormData (assuming `file` is a File object)
     if (file) {
-        formData.append("file", file); // Ensure file exists before appending
+      formData.append("file", file); // Ensure file exists before appending
     }
-
 
     try {
       await registerVehicles(formData);
       alert("The vehicle has been successfully registered!");
       router.push("/dashboard");
     } catch (error) {
-      console.error("Failed to register the vehicle", error);
-      alert("Failed to register the vehicle. Please try again.");
+      if (error instanceof Error) {
+        if (error.message === "WRONG_EXTENSION") {
+          setErrorMessage(
+            "Invalid file format. Please upload a .png, .jpg, .jpeg, or .pdf file."
+          );
+        } else if (error.message === "FILE_TOO_LARGE") {
+          setErrorMessage(
+            "File is too large. Please upload a file smaller than 5MB."
+          );
+        } else {
+          alert("Failed to register the vehicle. Please try again.");
+        }
+      } else {
+        console.error("An unexpected error occurred:", error);
+        alert("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
@@ -73,8 +78,8 @@ const RegisterCar: React.FC = () => {
       model.length > 1 &&
       firstRegistrationDate.length > 1 &&
       registration.length > 1 &&
-      vin.length > 1
-      // file !== null
+      vin.length > 1 &&
+      file !== null
     );
   };
 
@@ -88,7 +93,7 @@ const RegisterCar: React.FC = () => {
               {/* Ligne 1 : Car Brand et Model */}
               <div className="flex flex-col lg:flex-row gap-5">
                 <div className="flex flex-col gap-1.5 w-full">
-                  <label htmlFor="carBrand">Car Brand</label>
+                  <label htmlFor="carBrand">Car Brand*</label>
                   <input
                     className="border border-1 px-2 py-2.5"
                     type="text"
@@ -99,7 +104,7 @@ const RegisterCar: React.FC = () => {
                   />
                 </div>
                 <div className="flex flex-col gap-1.5 w-full">
-                  <label htmlFor="model">Model</label>
+                  <label htmlFor="model">Model*</label>
                   <input
                     className="border border-1 px-2 py-2.5"
                     type="text"
@@ -115,7 +120,7 @@ const RegisterCar: React.FC = () => {
               <div className="flex flex-col lg:flex-row gap-5">
                 <div className="relative flex flex-col gap-1.5 w-full">
                   <label htmlFor="firstRegistrationDate">
-                    First Registration Date
+                    First Registration Date*
                   </label>
                   <input
                     className="border border-1 px-2 py-2.5 w-full"
@@ -126,7 +131,7 @@ const RegisterCar: React.FC = () => {
                   />
                 </div>
                 <div className="flex flex-col gap-1.5 w-full">
-                  <label htmlFor="registration">Registration Number</label>
+                  <label htmlFor="registration">Registration Number*</label>
                   <input
                     className="border border-1 px-2 py-2.5"
                     type="text"
@@ -140,7 +145,7 @@ const RegisterCar: React.FC = () => {
 
               {/* Ligne 3 : VIN */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="vin">Vehicle Identification Number (VIN)</label>
+                <label htmlFor="vin">Vehicle Identification Number (VIN)*</label>
                 <input
                   className="border border-1 px-2 py-2.5 w-full"
                   type="text"
@@ -153,15 +158,8 @@ const RegisterCar: React.FC = () => {
 
               {/* Ligne 4 : Upload File */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="file">Upload file</label>
+                <label htmlFor="file">Upload file*</label>
                 <div className="flex items-center gap-2">
-                  {/* <input
-                    name="file"
-                    type="file"
-                    onChange={handleFileChange}
-                    className={`border border-gray-300 px-3 py-2 w-full`}
-                    placeholder="No file selected"
-                  /> */}
                   <input
                     id="file"
                     name="file"
@@ -171,9 +169,11 @@ const RegisterCar: React.FC = () => {
                   />
                   <input
                     type="text"
-                    value={file?.name || "No file chosen"}
+                    value={file?.name || "jpg, jpeg, png or pdf"}
                     readOnly
-                    className={`border border-gray-300 px-3 py-2 w-full`}
+                    className={`border border-gray-300 px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue ${
+                      file ? "text-black" : "text-gray-400"
+                    }`}
                     placeholder="No file selected"
                   />
                   <label
@@ -183,6 +183,7 @@ const RegisterCar: React.FC = () => {
                     Browse
                   </label>
                 </div>
+                {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
               </div>
 
               {/* Bouton Submit */}

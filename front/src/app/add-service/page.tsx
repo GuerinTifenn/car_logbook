@@ -15,31 +15,68 @@ const AddService: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const vehicleId: string = searchParams.get("vehicleId") || "";
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
+      setErrorMessage(null); // Reset any previous error
     }
+  };
+
+  const handleKilometersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setKilometers(value ? Number(value) : undefined); // Handle empty input
+  };
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    if (value >= 0) { // Allow only non-negative numbers
+      setPrice(value ? Number(value) : undefined);// Handle empty input
+    }
+
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formData = {
-      interventionDate,
-      description,
-      kilometers,
-      price,
-      vehicleId,
-    };
+    const formData = new FormData();
+
+    // Append the vehicle data to the FormData object
+    formData.append("interventionDate", interventionDate);
+    formData.append("description", description);
+    formData.append(
+      "kilometers",
+      kilometers !== undefined ? kilometers.toString() : ""
+    );
+    formData.append("price", price !== undefined ? price.toString() : "");
+    formData.append("vehicleId", vehicleId);
+
+    if (file) {
+      formData.append("file", file); // Ensure file exists before appending
+    }
 
     try {
       await registerServices(vehicleId, formData);
       alert("The intervention has been successfully registered!");
       router.push(`/services?vehicleId=${vehicleId}`);
     } catch (error) {
-      console.error("Failed to register the intervention", error);
-      alert("Failed to register the intervention. Please try again.");
+      if (error instanceof Error) {
+        if (error.message === "WRONG_EXTENSION") {
+          setErrorMessage(
+            "Invalid file format. Please upload a .png, .jpg, .jpeg, or .pdf file."
+          );
+        } else if (error.message === "FILE_TOO_LARGE") {
+          setErrorMessage(
+            "File is too large. Please upload a file smaller than 5MB."
+          );
+        } else {
+          alert("Failed to register the intervention. Please try again.");
+        }
+      } else {
+        console.error("An unexpected error occurred:", error);
+        alert("Failed to register the intervention. Please try again.");
+      }
     }
   };
 
@@ -48,8 +85,8 @@ const AddService: React.FC = () => {
       interventionDate.length > 1 &&
       description.length > 1 &&
       kilometers !== undefined &&
-      kilometers > 0
-      // file !== null
+      kilometers > 0 &&
+      file !== null
     );
   };
 
@@ -62,7 +99,7 @@ const AddService: React.FC = () => {
             <fieldset className="xl:m-12 flex flex-col gap-5">
               {/* Ligne 1 : Date */}
               <div className="relative flex flex-col gap-1.5 w-full">
-                <label htmlFor="date">Date</label>
+                <label htmlFor="date">Date*</label>
                 <input
                   className={`border border-1 px-2 py-2.5 w-full focus:outline-none focus:ring-2 focus:ring-blue ${
                     !interventionDate ? "text-gray-400" : "text-black"
@@ -76,7 +113,7 @@ const AddService: React.FC = () => {
 
               {/* Ligne 2 : Description */}
               <div className="flex flex-col gap-1.5 w-full">
-                <label htmlFor="description">Description</label>
+                <label htmlFor="description">Description*</label>
                 <input
                   className="border border-1 px-2 py-2.5"
                   type="text"
@@ -89,13 +126,13 @@ const AddService: React.FC = () => {
 
               {/* Ligne 3 : Kilometers */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="kilometers">Kilometers</label>
+                <label htmlFor="kilometers">Kilometers*</label>
                 <input
                   className="border border-1 px-2 py-2.5 w-full"
                   type="number"
                   name="kilometers"
-                  value={kilometers}
-                  onChange={(e) => setKilometers(Number(e.target.value))}
+                  value={kilometers !== undefined ? kilometers : ""}
+                  onChange={handleKilometersChange}
                   placeholder="Enter kilometers"
                 />
               </div>
@@ -107,15 +144,15 @@ const AddService: React.FC = () => {
                   className="border border-1 px-2 py-2.5 w-full"
                   type="number"
                   name="price"
-                  value={price}
-                  onChange={(e) => setPrice(Number(e.target.value))}
+                  value={price !== undefined ? price : ""}
+                  onChange={handlePriceChange}
                   placeholder="Enter price"
                 />
               </div>
 
               {/* Ligne 5 : Upload File */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="file">Upload file</label>
+                <label htmlFor="file">Upload file*</label>
                 <div className="flex items-center gap-2">
                   <input
                     id="file"
@@ -126,7 +163,7 @@ const AddService: React.FC = () => {
                   />
                   <input
                     type="text"
-                    value={file?.name || "No file chosen"}
+                    value={file?.name || "jpg, jpeg, png or pdf"}
                     readOnly
                     className={`border border-gray-300 px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue ${
                       file ? "text-black" : "text-gray-400"
@@ -140,6 +177,7 @@ const AddService: React.FC = () => {
                     Browse
                   </label>
                 </div>
+                {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
               </div>
 
               {/* Bouton Submit */}

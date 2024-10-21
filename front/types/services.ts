@@ -1,8 +1,8 @@
 export type ServicePayLoad = {
 	interventionDate: string;
 	description: string;
-	kilometers: number | undefined;
-	price: number | undefined;
+	kilometers: number;
+	price: number;
 	vehicleId: string | null;
 	// fileName: string; // Ajout du nom de fichier (si disponible)
   };
@@ -14,5 +14,5 @@ export type Services = {
 	kilometers: number;
 	price: number;
 	vehicleId: string;
-	// fileName:
+	fileName: string;
 };

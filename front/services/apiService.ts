@@ -1,21 +1,19 @@
-import { type ServicePayLoad, type Services } from "../types/services";
+import { type Services } from "../types/services";
 
 const apiUrl = "http://localhost:3000/api";
 
-  export const registerServices = async (vehicleId: string, serviceData: ServicePayLoad): Promise<Services[]> => {
+  export const registerServices = async (vehicleId: string, formData: FormData): Promise<Services[]> => {
 	const response = await fetch(`${apiUrl}/service/${vehicleId}`,
 		{
 			method: "POST",
-			headers: {
-			  "Content-Type": "application/json",
-			},
 			credentials: 'include',
-			body: JSON.stringify(serviceData),
+			body: formData,
 		  }
 		);
 
 	if (!response.ok) {
-	  throw new Error("Failed to register services");
+		const errorData = await response.json(); // Extract the error response
+		throw new Error(errorData.code || 'UNKNOWN_ERROR'); // Throw error with the code or 'UNKNOWN_ERROR'
 	}
 	return response.json();
   };

@@ -11,25 +11,11 @@ const apiUrl = "http://localhost:3000/api";
 	});
 
 	if (!response.ok) {
-		throw new Error("Failed to register vehicle");
-	}
+		const errorData = await response.json(); // Extract the error response
+		throw new Error(errorData.code || 'UNKNOWN_ERROR'); // Throw error with the code or 'UNKNOWN_ERROR'
+	  }
 
 	return response.json(); // Return the JSON response
-	// const response = await fetch(`${apiUrl}/vehicle/create`,
-	// 	{
-	// 		method: "POST",
-	// 		headers: {
-	// 		  "Content-Type": "application/json",
-	// 		},
-	// 		credentials: 'include',
-	// 		body: JSON.stringify(vehicleData),
-	// 	  }
-	// 	);
-
-	// if (!response.ok) {
-	//   throw new Error("Failed to register vehicles");
-	// }
-	// return response.json();
   };
 
   export const fetchUserVehicles = async (userId: string): Promise<Vehicles[]> => {
