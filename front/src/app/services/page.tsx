@@ -64,11 +64,11 @@ const ServicesPage: React.FC = () => {
   };
 
   const editService = (serviceID: string) => {
-    console.log("go to edit page", serviceID);
+    router.push(`/edit-service?serviceId=${serviceID}&edit=true`);
   };
 
   const deleteService = (serviceID: string) => {
-    console.log("open delete modal", serviceID);
+    router.push(`/edit-service?serviceId=${serviceID}&delete=true`);
   };
 
   const filteredServices = services.filter((service) =>

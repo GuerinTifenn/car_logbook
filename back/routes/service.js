@@ -7,5 +7,6 @@ const serviceController = require("../controllers/service");
 
 router.post("/service/:vehicleId", auth, multer, serviceController.createService);
 router.get("/services/:vehicleId", auth, serviceController.getServicesByVehicle)
+router.get("/service/:serviceId", auth, serviceController.getServiceById)
 
 module.exports = router;

@@ -16,3 +16,10 @@ export type Services = {
 	vehicleId: string;
 	fileName: string;
 };
+
+export type Service = {
+	interventionDate: string;
+	description: string;
+	kilometers: number;
+	price: number;
+};

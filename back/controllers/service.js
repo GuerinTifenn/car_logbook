@@ -28,8 +28,22 @@ exports.getServicesByVehicle = async (req, res) => {
   try {
     const {vehicleId} = req.params
     const vehicleObjectId = new mongoose.Types.ObjectId(String(vehicleId));
-    const Services = await Service.find({vehicleId: vehicleObjectId});
-    res.status(200).json(Services);
+    const services = await Service.find({vehicleId: vehicleObjectId});
+    res.status(200).json(services);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getServiceById = async (req, res) => {
+  try {
+    const { serviceId } = req.params;
+    const serviceObjectId = new mongoose.Types.ObjectId(String(serviceId));
+    const service = await Service.findById(serviceObjectId);
+    if (!service) {
+      return res.status(404).json({ message: 'Service not found' });
+    }
+    res.status(200).json(service);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

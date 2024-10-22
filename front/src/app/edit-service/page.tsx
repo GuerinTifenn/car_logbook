@@ -1,0 +1,226 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { updateService, fetchServiceById } from "../../../services/apiService"; // À ajuster avec vos fonctions d'API
+
+const EditDeleteService: React.FC = () => {
+  const [interventionDate, setDate] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [price, setPrice] = useState<number | undefined>(undefined);
+  const [kilometers, setKilometers] = useState<number | undefined>(undefined);
+  const [file, setFile] = useState<File | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false); // Pour gérer le chargement des données
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const serviceId: string = searchParams.get("serviceId") || "";
+  const editQuery: boolean = searchParams.has("edit") || false;
+
+  // Fetch service data when component mounts
+  useEffect(() => {
+    const fetchServiceData = async () => {
+      try {
+		setLoading(true)
+        const service = await fetchServiceById(serviceId);
+        setDate(service.interventionDate);
+        setDescription(service.description);
+        setPrice(service.price);
+        setKilometers(service.kilometers);
+      } catch (error) {
+        console.error("Failed to load service data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (serviceId && editQuery) {
+      fetchServiceData();
+    }
+  }, [serviceId, editQuery]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+      setErrorMessage(null); // Reset any previous error
+    }
+  };
+
+  const handleKilometersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setKilometers(value ? Number(value) : undefined); // Handle empty input
+  };
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    if (value >= 0) {
+      // Allow only non-negative numbers
+      setPrice(value ? Number(value) : undefined);
+    }
+  };
+
+  const handleSubmitEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("interventionDate", interventionDate);
+    formData.append("description", description);
+    formData.append(
+      "kilometers",
+      kilometers !== undefined ? kilometers.toString() : ""
+    );
+    formData.append("price", price !== undefined ? price.toString() : "");
+    formData.append("serviceId", serviceId);
+
+    if (file) {
+      formData.append("file", file);
+    }
+
+    try {
+      await updateService(serviceId, formData);
+      alert("Service updated successfully!");
+      router.push(`/services?serviceId=${serviceId}`);
+    } catch (error) {
+      console.error("Failed to update the service:", error);
+    }
+  };
+
+  //   const handleSubmitDelete = async (e: React.FormEvent) => {
+  //     e.preventDefault();
+  //     try {
+  //       await deleteService(serviceId);
+  //       alert("Service deleted successfully!");
+  //       router.push("/services");
+  //     } catch (error) {
+  //       console.error("Failed to delete the service:", error);
+  //     }
+  //   };
+
+  const isEditFormValid = (): boolean => {
+    return (
+      interventionDate.length > 1 &&
+      description.length > 1 &&
+      kilometers !== undefined &&
+      kilometers > 0
+    );
+  };
+
+  return (
+    <section>
+      <div className="edit-section">
+        <h1 className="text-4xl text-center my-5">Edit Service</h1>
+        <div className="m-2 xl:m-5 flex flex-col xl:flex-row gap-5 justify-center">
+          <div className="w-full xl:w-6/12 gap-5 xl:gap-0 flex flex-col">
+            {loading ? (
+              <p className="text-center">Loading...</p>
+            ) : (
+              <form onSubmit={handleSubmitEdit}>
+                <fieldset className="xl:m-12 flex flex-col gap-5">
+                  {/* Date */}
+                  <div className="relative flex flex-col gap-1.5 w-full">
+                    <label htmlFor="date">Date*</label>
+                    <input
+                      className="border border-1 px-2 py-2.5 w-full"
+                      type="date"
+                      name="InterventionDate"
+                      value={interventionDate}
+                      onChange={(e) => setDate(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Description */}
+                  <div className="flex flex-col gap-1.5 w-full">
+                    <label htmlFor="description">Description*</label>
+                    <input
+                      className="border border-1 px-2 py-2.5"
+                      type="text"
+                      name="description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Enter the Description"
+                    />
+                  </div>
+
+                  {/* Kilometers */}
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="kilometers">Kilometers*</label>
+                    <input
+                      className="border border-1 px-2 py-2.5 w-full"
+                      type="number"
+                      name="kilometers"
+                      value={kilometers !== undefined ? kilometers : ""}
+                      onChange={handleKilometersChange}
+                      placeholder="Enter kilometers"
+                    />
+                  </div>
+
+                  {/* Price */}
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="price">Price</label>
+                    <input
+                      className="border border-1 px-2 py-2.5 w-full"
+                      type="number"
+                      name="price"
+                      value={price !== undefined ? price : ""}
+                      onChange={handlePriceChange}
+                      placeholder="Enter price"
+                    />
+                  </div>
+
+                  {/* File Upload */}
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="file">Upload file*</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        id="file"
+                        name="file"
+                        type="file"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                      <input
+                        type="text"
+                        value={file?.name || "jpg, jpeg, png or pdf"}
+                        readOnly
+                        className={`border border-gray-300 px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue ${
+                          file ? "text-black" : "text-gray-400"
+                        }`}
+                        placeholder="No file selected"
+                      />
+                      <label
+                        htmlFor="file"
+                        className="bg-blue text-white px-4 py-2 cursor-pointer"
+                      >
+                        Browse
+                      </label>
+                    </div>
+                    {errorMessage && (
+                      <p style={{ color: "red" }}>{errorMessage}</p>
+                    )}
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="mt-3">
+                    <button
+                      className={`${
+                        isEditFormValid()
+                          ? "bg-blue hover:bg-bluedark"
+                          : "bg-gray-300 cursor-not-allowed"
+                      } px-2 py-2.5 w-full text-white`}
+                      type="submit"
+                      disabled={!isEditFormValid()}
+                    >
+                      Request for validation
+                    </button>
+                  </div>
+                </fieldset>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default EditDeleteService;
