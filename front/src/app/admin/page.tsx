@@ -6,33 +6,49 @@ import calendarIcon from "../../public/assets/calendar.svg";
 import { formatDate } from "@/utils/date";
 import pencilIcon from "../../public/assets/pencil-edit.svg";
 import trashBinIcon from "../../public/assets/trash-bin.svg";
+import arrowRightIcon from "../../public/assets/arrow-right.svg";
 
 const AdminRequestsPage = () => {
-  const [requests, setRequests] = useState<any[]>([]); // Liste des requêtes
+  const [requests, setRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Fetch all the requests on page load
   useEffect(() => {
-    const fetchRequests = async () => {
+    const fetchRequestsAndServices = async () => {
       try {
-        const data = await fetchAllRequests();
-        setRequests(data);
+        const fetchedRequests = await fetchAllRequests();
+        setRequests(fetchedRequests);
       } catch (error) {
-        console.error("Failed to fetch requests", error);
+        console.error("Failed to fetch requests or services", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchRequests();
+    fetchRequestsAndServices();
   }, []);
 
-  // Filtrer les requêtes selon la barre de recherche
   const filteredRequests = requests.filter((request) =>
-    request.comment.toLowerCase().includes(searchTerm.toLowerCase())
+    request.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  //   // Gérer l'acceptation d'une requête
+  const renderWithArrowIcon = (current: any, requested: any, formatFn?: (val: any) => any) => {
+    const formattedCurrent = current ? (formatFn ? formatFn(current) : current) : "N/A";
+    const formattedRequested = requested ? (formatFn ? formatFn(requested) : requested) : "N/A";
+
+    return (
+      <span>
+        {formattedCurrent}{" "}
+        {formattedCurrent !== formattedRequested && (
+          <>
+            <Image src={arrowRightIcon} alt="arrow" width={16} className="inline-block mx-2" />
+            {formattedRequested}
+          </>
+        )}
+      </span>
+    );
+  };
+
+    //   // Gérer l'acceptation d'une requête
   //   const handleAccept = async (requestId: string) => {
   //     try {
   //       await updateRequestStatus(requestId, "accepted"); // Appel API pour accepter la requête
@@ -68,7 +84,7 @@ const AdminRequestsPage = () => {
           <div className="flex justify-center mb-6">
             <input
               type="text"
-              placeholder="🔍 Search by comment"
+              placeholder="🔍 Search by description"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="border rounded-lg p-2 w-full max-w-sm"
@@ -84,39 +100,65 @@ const AdminRequestsPage = () => {
           {filteredRequests.length === 0 ? (
             <div className="text-center text-gray-500">No requests found</div>
           ) : (
-            filteredRequests.map((request) => (
-              <div key={request._id} className="w-full xl:w-6/12">
-                <ul className="border border-gray-200 rounded-lg p-6 shadow-lg text-center hover:shadow-2xl transition-shadow duration-200 flex flex-col justify-between h-full">
-                  <li>
-                    <div className="flex justify-between">
-                      <div className="flex items-center gap-3">
-                        <Image src={calendarIcon} alt="date" width={24}></Image>
-                        <span className="">
-                          {formatDate(request.createdAt)}
-                        </span>
+            filteredRequests.map((request) => {
+              const currentService = request.service; // Récupérer les données actuelles directement à partir de la requête
+
+              return (
+                <div key={request._id} className="w-full xl:w-6/12">
+                  <ul className="border border-gray-200 rounded-lg p-6 shadow-lg text-center hover:shadow-2xl transition-shadow duration-200 flex flex-col justify-between h-full">
+                    <li>
+                      <div className="flex justify-between">
+                        <div className="flex items-center gap-3">
+                          <Image src={calendarIcon} alt="date" width={24}></Image>
+                          <span>{formatDate(request.createdAt)}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          {request.type === "edit" ? (
+                            <Image src={pencilIcon} alt="edit request" width={24} />
+                          ) : (
+                            <Image src={trashBinIcon} alt="delete request" width={24} />
+                          )}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        {request.type === "edit" ? (
-                          <Image
-                            src={pencilIcon}
-                            alt="edit request"
-                            width={24}
-                          />
-                        ) : (
-                          <Image
-                            src={trashBinIcon}
-                            alt="delete request"
-                            width={24}
-                          />
-                        )}
+                      <hr className="border my-3 border-grey" />
+
+                      <div className="flex flex-col gap-2 text-left">
+                        <div>
+                          <strong>Date:</strong>{" "}
+                          {renderWithArrowIcon(
+                            currentService?.interventionDate,
+                            request.interventionDate,
+                            formatDate
+                          )}
+                        </div>
+                        <div>
+                          <strong>Description:</strong>{" "}
+                          {renderWithArrowIcon(
+                            currentService?.description,
+                            request.description
+                          )}
+                        </div>
+                        <div>
+                          <strong>Kilometers:</strong>{" "}
+                          {renderWithArrowIcon(
+                            currentService?.kilometers,
+                            request.kilometers
+                          )}
+                        </div>
+                        <div>
+                          <strong>Price:</strong>{" "}
+                          {renderWithArrowIcon(
+                            currentService?.price,
+                            request.price,
+                            (val) => (val ? `${val} €` : "N/A")
+                          )}
+                        </div>
+                        <div>
+                          <strong>Comment:</strong> {request.comment || "N/A"}
+                        </div>
                       </div>
-                    </div>
-                    <hr className="border my-3 border-grey" />
-                    <div className="">
-                      {/* <p className="text-lg mb-2">Comment: {request.comment}</p>
-                      <p className="text-lg mb-2">
-                        Status: <strong>{request.status}</strong>
-                      </p> */}
+
+                      {/* Boutons accept/refuse */}
                       <div className="flex justify-center gap-3 mt-4">
                         <button
                           className="border border-gray-300 px-4 py-2 rounded hover:bg-grey"
@@ -131,11 +173,11 @@ const AdminRequestsPage = () => {
                           ✔ Accept
                         </button>
                       </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            ))
+                    </li>
+                  </ul>
+                </div>
+              );
+            })
           )}
         </div>
       )}
