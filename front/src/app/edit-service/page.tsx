@@ -79,7 +79,12 @@ const EditDeleteService: React.FC = () => {
       "kilometers",
       kilometers !== undefined ? kilometers.toString() : ""
     );
-    formData.append("price", price !== undefined ? price.toString() : "");
+
+    // Vérifiez que price est défini avant de l'ajouter à formData
+    if (price !== undefined && price !== null) {
+      formData.append("price", price.toString());
+    }
+
     formData.append("serviceId", serviceId);
     formData.append("comment", comment);
 
@@ -90,7 +95,7 @@ const EditDeleteService: React.FC = () => {
     try {
       await askUpdateService(formData);
       alert("Service updated successfully!");
-    	router.push(`/services?vehicleId=${vehicleId}`);
+      router.push(`/services?vehicleId=${vehicleId}`);
     } catch (error) {
       console.error("Failed to update the service:", error);
     }

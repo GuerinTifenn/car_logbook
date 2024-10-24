@@ -145,14 +145,16 @@ const AdminRequestsPage = () => {
                             request.kilometers
                           )}
                         </div>
-                        <div>
-                          <strong>Price:</strong>{" "}
-                          {renderWithArrowIcon(
-                            currentService?.price,
-                            request.price,
-                            (val) => (val ? `${val} €` : "N/A")
-                          )}
-                        </div>
+                        {request.price !== undefined && request.price !== null && (
+                          <div>
+                            <strong>Price:</strong>{" "}
+                            {renderWithArrowIcon(
+                              currentService?.price,
+                              request.price,
+                              (val) => (val ? `${val} €` : "N/A")
+                            )}
+                          </div>
+                        )}
                         <div>
                           <strong>Comment:</strong> {request.comment || "N/A"}
                         </div>
