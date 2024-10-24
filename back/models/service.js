@@ -8,6 +8,11 @@ const serviceSchema = mongoose.Schema({
   price: { type: Number, required: false },
   fileName: { type: String, required: true },
   vehicleId: {type: Schema.Types.ObjectId, ref: "Vehicle", required: true},
+  status: {
+    type: String,
+    enum: ["initial", "pending", "validated", "declined"],
+    default: "initial",
+  },
 });
 
 

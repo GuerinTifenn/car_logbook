@@ -7,6 +7,7 @@ const userSchema = mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   is_admin: { type: Boolean, required: true },
+  vehicles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Vehicle" }]
 });
 
 userSchema.plugin(uniqueValidator);

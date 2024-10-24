@@ -10,6 +10,7 @@ const cors = require("cors");
 const auth = require("./middleware/auth");
 const vehicleRoutes = require("./routes/vehicle");
 const serviceRoutes = require("./routes/service")
+const requestRoutes = require("./routes/request")
 const path = require("path");
 
 mongoose
@@ -60,5 +61,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 app.use("/api/", userRoutes);
 app.use("/api/", vehicleRoutes);
 app.use("/api/", serviceRoutes)
+app.use("/api/", requestRoutes)
 
 module.exports = app;

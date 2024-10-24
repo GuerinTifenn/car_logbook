@@ -2,7 +2,10 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import { updateService, fetchServiceById } from "../../../services/apiService"; // À ajuster avec vos fonctions d'API
+import {
+  askUpdateService,
+  fetchServiceById,
+} from "../../../services/apiService";
 
 const EditDeleteService: React.FC = () => {
   const [interventionDate, setDate] = useState<string>("");
@@ -11,18 +14,20 @@ const EditDeleteService: React.FC = () => {
   const [kilometers, setKilometers] = useState<number | undefined>(undefined);
   const [file, setFile] = useState<File | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); // Pour gérer le chargement des données
+  const [loading, setLoading] = useState<boolean>(false);
+  const [comment, setComment] = useState<string>("");
 
   const router = useRouter();
   const searchParams = useSearchParams();
   const serviceId: string = searchParams.get("serviceId") || "";
+  const vehicleId: string = searchParams.get("vehicleId") || "";
   const editQuery: boolean = searchParams.has("edit") || false;
 
   // Fetch service data when component mounts
   useEffect(() => {
     const fetchServiceData = async () => {
       try {
-		setLoading(true)
+        setLoading(true);
         const service = await fetchServiceById(serviceId);
         setDate(service.interventionDate);
         setDescription(service.description);
@@ -52,6 +57,11 @@ const EditDeleteService: React.FC = () => {
     setKilometers(value ? Number(value) : undefined); // Handle empty input
   };
 
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    setComment(value);
+  };
+
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     if (value >= 0) {
@@ -71,15 +81,16 @@ const EditDeleteService: React.FC = () => {
     );
     formData.append("price", price !== undefined ? price.toString() : "");
     formData.append("serviceId", serviceId);
+    formData.append("comment", comment);
 
     if (file) {
       formData.append("file", file);
     }
 
     try {
-      await updateService(serviceId, formData);
+      await askUpdateService(formData);
       alert("Service updated successfully!");
-      router.push(`/services?serviceId=${serviceId}`);
+    	router.push(`/services?vehicleId=${vehicleId}`);
     } catch (error) {
       console.error("Failed to update the service:", error);
     }
@@ -101,7 +112,9 @@ const EditDeleteService: React.FC = () => {
       interventionDate.length > 1 &&
       description.length > 1 &&
       kilometers !== undefined &&
-      kilometers > 0
+      kilometers > 0 &&
+      file !== null &&
+      comment.length > 1
     );
   };
 
@@ -111,6 +124,11 @@ const EditDeleteService: React.FC = () => {
         <h1 className="text-4xl text-center my-5">Edit Service</h1>
         <div className="m-2 xl:m-5 flex flex-col xl:flex-row gap-5 justify-center">
           <div className="w-full xl:w-6/12 gap-5 xl:gap-0 flex flex-col">
+            <p className="text-left xl:ml-12">
+              To prevent any fraud, please provide a detailed comment along with
+              an attachment that justifies your modification. Your request will
+              then be reviewed and approved within 48 hours.
+            </p>
             {loading ? (
               <p className="text-center">Loading...</p>
             ) : (
@@ -197,6 +215,19 @@ const EditDeleteService: React.FC = () => {
                     {errorMessage && (
                       <p style={{ color: "red" }}>{errorMessage}</p>
                     )}
+                  </div>
+
+                  {/* Comment */}
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="comment">Comment*</label>
+                    <textarea
+                      id="comment"
+                      name="comment"
+                      value={comment}
+                      className="p-2"
+                      onChange={handleCommentChange}
+                      placeholder="Ajouter un commentaire..."
+                    />
                   </div>
 
                   {/* Submit Button */}

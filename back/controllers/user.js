@@ -18,7 +18,8 @@ exports.signup = (req, res, next) => {
             first_name: req.body.first_name,
             email: req.body.email,
             password: hash,
-            is_admin: req.body.is_admin
+            is_admin: req.body.is_admin,
+            vehicles: []
           });
           user
             .save()

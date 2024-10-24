@@ -15,6 +15,7 @@ export type Services = {
 	price: number;
 	vehicleId: string;
 	fileName: string;
+	status: string
 };
 
 export type Service = {

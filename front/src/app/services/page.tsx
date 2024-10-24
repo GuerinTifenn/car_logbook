@@ -64,11 +64,15 @@ const ServicesPage: React.FC = () => {
   };
 
   const editService = (serviceID: string) => {
-    router.push(`/edit-service?serviceId=${serviceID}&edit=true`);
+    router.push(
+      `/edit-service?vehicleId=${vehicleId}&serviceId=${serviceID}&edit=true`
+    );
   };
 
   const deleteService = (serviceID: string) => {
-    router.push(`/edit-service?serviceId=${serviceID}&delete=true`);
+    router.push(
+      `/edit-service?vehicleId=${vehicleId}&serviceId=${serviceID}&delete=true`
+    );
   };
 
   const filteredServices = services.filter((service) =>
@@ -138,6 +142,11 @@ const ServicesPage: React.FC = () => {
                       </div>
                     </div>
                     <hr className="border my-3 border-grey" />
+                    {service.status !== "initial" && (
+                      <div className="text-right">
+                        <strong>{service.status}</strong>
+                      </div>
+                    )}
                     <div className="">
                       <h2 className="text-2xl font-semibold mb-4 truncate text-start">
                         {service.description}

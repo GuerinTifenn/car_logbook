@@ -1,22 +1,32 @@
 const Vehicle = require("../models/vehicle");
 const mongoose = require("mongoose");
+const User = require("../models/user")
 
 // Création d'un véhicule
 exports.createVehicle = async (req, res) => {
   try {
     const vehicleObject = req.body
-    delete vehicleObject._userId
+
+    // Ensure the user exists
+    const user = await User.findById(req.auth.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     const vehicle = new Vehicle({
       ...vehicleObject,
-      userId: req.auth.userId,
       fileName: `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}` // File URL
     })
 
-    await vehicle.save();
+    // Save the vehicle to the Vehicle collection
+    const savedVehicle = await vehicle.save();
+
+    // Add the vehicle to the user's vehicles array
+    user.vehicles.push(savedVehicle._id);
+    await user.save(); // Save the updated user with the new vehicle
 
       // Send a success response if the vehicle is saved successfully
-      res.status(201).json({ message: 'Vehicle saved successfully!' });
+      res.status(201).json({ message: 'Vehicle saved successfully!', vehicle: savedVehicle });
   } catch (error) {
      console.error("Vehicle registration error:", error);
     res.status(400).json({ error: error.message });

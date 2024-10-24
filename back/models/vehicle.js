@@ -9,7 +9,8 @@ const vehicleSchema = new mongoose.Schema({
   registration: { type: String, required: true },
   vin: { type: String, required: true, unique: true },
   fileName: { type: String, required: true },
-  userId: {type: Schema.Types.ObjectId, ref: "User", required: true}
+  userId: {type: Schema.Types.ObjectId, ref: "User", required: true},
+  services: [{ type: mongoose.Schema.Types.ObjectId, ref: "Service" }] // Each vehicle can have multiple services
 });
 
 module.exports = mongoose.model("Vehicle", vehicleSchema);

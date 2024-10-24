@@ -26,7 +26,7 @@ const authSlice = createSlice({
     setToken(state, action: PayloadAction<string>) {
       state.token = action.payload;
       state.isAuthenticated = true;
-      Cookies.set('token', action.payload, { expires: 7, secure: true });
+      Cookies.set('token', action.payload, { expires: 1, secure: true });
     },
     // Définir une action pour déconnecter l'utilisateur
     clearToken(state) {

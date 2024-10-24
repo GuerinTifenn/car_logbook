@@ -1,0 +1,11 @@
+const express = require("express");
+const router = express.Router();
+const auth = require("../middleware/auth");
+const multer = require("../middleware/multer-config"); // Import du middleware Multer
+const requestController = require("../controllers/request");
+// Routes pour les requêtes admin edit / delete
+
+router.post("/service/edit/request", auth, multer, requestController.submitEditServiceRequest);
+router.get("/admin/requests", auth, requestController.getAllRequests);
+
+module.exports = router;
