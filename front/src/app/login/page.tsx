@@ -32,8 +32,14 @@ export default function Login() {
       if (data.token) {
         dispatch(setToken(data.token)); // Stocke le token dans Redux
         dispatch(setUserId(data.userId));
-        dispatch(setUserAdminStatus(data.userAdmin))
-        router.push("/dashboard");
+        dispatch(setUserAdminStatus(data.userAdmin));
+
+        // Rediriger en fonction du statut admin
+        if (data.userAdmin) {
+          router.push("/admin");
+        } else {
+          router.push("/dashboard");
+        }
       }
       resetForm();
     } catch (error: unknown) {
