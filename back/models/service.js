@@ -10,7 +10,7 @@ const serviceSchema = mongoose.Schema({
   vehicleId: {type: Schema.Types.ObjectId, ref: "Vehicle", required: true},
   status: {
     type: String,
-    enum: ["initial", "pending", "validated", "declined"],
+    enum: ["initial", "pending", "accepted", "declined"],
     default: "initial",
   },
 });

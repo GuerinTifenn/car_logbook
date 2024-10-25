@@ -46,7 +46,7 @@ const Header: FC = () => {
       dispatch(clearToken()); // Déconnexion du state Redux
       dispatch(clearUser())
       setIsOpen(false);
-      router.push("/login");
+      router.replace("/login");
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error("Log out error:", error.message); // Log the error

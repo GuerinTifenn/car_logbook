@@ -46,7 +46,7 @@ export const fetchServiceById = async (serviceId: string): Promise<Service> => {
   if (!response.ok) {
     throw new Error("Failed to fetch the service");
   }
-  return response.json(); // Ici, on retourne un seul objet de type 'Services'
+  return response.json(); 
 };
 
 // Demande edition service  (!! POST REQUEST BECAUSE SHOULD BE VALIDATED BY ADMIN)
@@ -93,21 +93,4 @@ export const fetchAllRequests = async (): Promise<any[]> => {
   return response.json();
 };
 
-// // Fonction pour mettre à jour le statut d'une requête
-// export const updateRequestStatus = async (
-//   requestId: string,
-//   status: "accepted" | "declined"
-// ): Promise<void> => {
-//   const response = await fetch(`${apiUrl}/edit-requests/${requestId}`, {
-//     method: "PATCH", // PATCH pour mise à jour partielle
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     credentials: "include",
-//     body: JSON.stringify({ status }),
-//   });
 
-//   if (!response.ok) {
-//     throw new Error("Failed to update request status");
-//   }
-// };

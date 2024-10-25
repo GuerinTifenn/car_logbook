@@ -7,5 +7,6 @@ const requestController = require("../controllers/request");
 
 router.post("/service/edit/request", auth, multer, requestController.submitEditServiceRequest);
 router.get("/admin/requests", auth, requestController.getAllRequests);
+router.patch("/admin/requests/edit/process/:requestId/:action", auth, requestController.processEditRequest);
 
 module.exports = router;

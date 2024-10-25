@@ -59,7 +59,6 @@ exports.getAllRequests = async (req, res) => {
     // Fetch all requests from the Request collection
     const requests = await Request.find()
       .populate("service") // Optionally populate the related service
-      .populate("userId");  // Optionally populate user details if needed
 
     // Respond with the list of requests
     res.status(200).json(requests);
@@ -68,6 +67,51 @@ exports.getAllRequests = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// accept or decline edit //
+exports.processEditRequest = async (req, res) => {
+  try {
+    const { requestId, action } = req.params;
+
+    const request = await Request.findById(requestId);
+    if (!request) return res.status(404).json({ success: false, message: "Request not found" });
+
+    const service = await Service.findById(request.service._id);
+    if (!service) return res.status(404).json({ success: false, message: "Service not found" });
+
+    if (action === "accept") {
+      // Apply the updates if accepted
+      service.interventionDate = request.interventionDate;
+      service.description = request.description;
+      service.kilometers = request.kilometers;
+      service.price = request.price;
+      service.comment = request.comment;
+      service.status = "accepted";
+
+      request.status = "accepted";
+      await Promise.all([service.save(), request.save()]); // Save both changes concurrently
+
+
+    } else if (action === "decline") {
+      request.status = "declined";
+      await request.save();
+
+    } else {
+      return res.status(400).json({ success: false, message: "Invalid action" });
+    }
+
+    await Request.findByIdAndDelete(requestId); // Remove request after processing
+
+    res.status(200).json({
+      success: true,
+      message: `Request ${action === "accept" ? "accepted" : "declined"} successfully.`,
+    });
+
+  } catch (error) {
+    console.error("Error processing request:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
 
 //delete request
 

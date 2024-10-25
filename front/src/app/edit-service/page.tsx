@@ -70,6 +70,10 @@ const EditDeleteService: React.FC = () => {
     }
   };
 
+  const resetForm = () => {
+    setComment(""), setDate(""), setPrice(undefined), setDescription(""), setKilometers(undefined), setFile(null);
+  };
+
   const handleSubmitEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData();
@@ -94,8 +98,9 @@ const EditDeleteService: React.FC = () => {
 
     try {
       await askUpdateService(formData);
-      alert("Service updated successfully!");
+      alert("Request send successfully to the admin!");
       router.push(`/services?vehicleId=${vehicleId}`);
+      resetForm()
     } catch (error) {
       console.error("Failed to update the service:", error);
     }

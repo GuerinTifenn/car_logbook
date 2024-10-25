@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema
 
 const RequestSchema = mongoose.Schema({
-  interventionDate: { type: Date, required: false },
+  interventionDate: { type: String, required: false },
   description: { type: String, required: false },
   kilometers: { type: Number, required: false },
   price: { type: Number, required: false },
@@ -15,6 +15,6 @@ const RequestSchema = mongoose.Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 
- // only type, comments and fileName field are required//
+ // only type, comments and fileName fields are required//
   // edit and delete use the same schema //
 module.exports = mongoose.model("Request", RequestSchema);

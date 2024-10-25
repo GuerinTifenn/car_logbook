@@ -7,6 +7,7 @@ import { formatDate } from "@/utils/date";
 import pencilIcon from "../../public/assets/pencil-edit.svg";
 import trashBinIcon from "../../public/assets/trash-bin.svg";
 import arrowRightIcon from "../../public/assets/arrow-right.svg";
+import { processEditRequest } from "../../../services/apiRequest";
 
 const AdminRequestsPage = () => {
   const [requests, setRequests] = useState<any[]>([]);
@@ -31,16 +32,33 @@ const AdminRequestsPage = () => {
     request.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const renderWithArrowIcon = (current: any, requested: any, formatFn?: (val: any) => any) => {
-    const formattedCurrent = current ? (formatFn ? formatFn(current) : current) : "N/A";
-    const formattedRequested = requested ? (formatFn ? formatFn(requested) : requested) : "N/A";
+  const renderWithArrowIcon = (
+    current: any,
+    requested: any,
+    formatFn?: (val: any) => any
+  ) => {
+    const formattedCurrent = current
+      ? formatFn
+        ? formatFn(current)
+        : current
+      : "N/A";
+    const formattedRequested = requested
+      ? formatFn
+        ? formatFn(requested)
+        : requested
+      : "N/A";
 
     return (
       <span>
         {formattedCurrent}{" "}
         {formattedCurrent !== formattedRequested && (
           <>
-            <Image src={arrowRightIcon} alt="arrow" width={16} className="inline-block mx-2" />
+            <Image
+              src={arrowRightIcon}
+              alt="arrow"
+              width={16}
+              className="inline-block mx-2"
+            />
             {formattedRequested}
           </>
         )}
@@ -48,19 +66,19 @@ const AdminRequestsPage = () => {
     );
   };
 
-    //   // Gérer l'acceptation d'une requête
-  //   const handleAccept = async (requestId: string) => {
-  //     try {
-  //       await updateRequestStatus(requestId, "accepted"); // Appel API pour accepter la requête
-  //       alert("Request accepted!");
-  //       setRequests((prev) =>
-  //         prev.filter((request) => request._id !== requestId) // Filtre les requêtes une fois acceptées
-  //       );
-  //     } catch (error) {
-  //       console.error("Failed to accept request", error);
-  //       alert("Failed to accept the request. Please try again.");
-  //     }
-  //   };
+  //   // Gérer l'acceptation d'une requête
+  const handleAccept = async (requestId: string) => {
+    try {
+      await processEditRequest(requestId, "accept"); // Appel API pour accepter la requête
+      alert("Request accepted!");
+      setRequests(
+        (prev) => prev.filter((request) => request._id !== requestId) // Filtre les requêtes une fois acceptées
+      );
+    } catch (error) {
+      console.error("Failed to accept request", error);
+      alert("Failed to accept the request. Please try again.");
+    }
+  };
 
   //   // Gérer le refus d'une requête
   //   const handleDecline = async (requestId: string) => {
@@ -109,14 +127,26 @@ const AdminRequestsPage = () => {
                     <li>
                       <div className="flex justify-between">
                         <div className="flex items-center gap-3">
-                          <Image src={calendarIcon} alt="date" width={24}></Image>
+                          <Image
+                            src={calendarIcon}
+                            alt="date"
+                            width={24}
+                          ></Image>
                           <span>{formatDate(request.createdAt)}</span>
                         </div>
                         <div className="flex items-center gap-1">
                           {request.type === "edit" ? (
-                            <Image src={pencilIcon} alt="edit request" width={24} />
+                            <Image
+                              src={pencilIcon}
+                              alt="edit request"
+                              width={24}
+                            />
                           ) : (
-                            <Image src={trashBinIcon} alt="delete request" width={24} />
+                            <Image
+                              src={trashBinIcon}
+                              alt="delete request"
+                              width={24}
+                            />
                           )}
                         </div>
                       </div>
@@ -145,16 +175,17 @@ const AdminRequestsPage = () => {
                             request.kilometers
                           )}
                         </div>
-                        {request.price !== undefined && request.price !== null && (
-                          <div>
-                            <strong>Price:</strong>{" "}
-                            {renderWithArrowIcon(
-                              currentService?.price,
-                              request.price,
-                              (val) => (val ? `${val} €` : "N/A")
-                            )}
-                          </div>
-                        )}
+                        {request.price !== undefined &&
+                          request.price !== null && (
+                            <div>
+                              <strong>Price:</strong>{" "}
+                              {renderWithArrowIcon(
+                                currentService?.price,
+                                request.price,
+                                (val) => (val ? `${val} €` : "N/A")
+                              )}
+                            </div>
+                          )}
                         <div>
                           <strong>Comment:</strong> {request.comment || "N/A"}
                         </div>
@@ -170,7 +201,7 @@ const AdminRequestsPage = () => {
                         </button>
                         <button
                           className="bg-blue hover:bg-bluedark text-white px-4 py-2 rounded"
-                          // onClick={() => handleAccept(request._id)}
+                          onClick={() => handleAccept(request._id)}
                         >
                           ✔ Accept
                         </button>
