@@ -1,4 +1,5 @@
 import { type Services, type Service } from "../types/services";
+import { type Requests } from "../types/request";
 
 const apiUrl = "http://localhost:3000/api";
 
@@ -46,12 +47,27 @@ export const fetchServiceById = async (serviceId: string): Promise<Service> => {
   if (!response.ok) {
     throw new Error("Failed to fetch the service");
   }
-  return response.json(); 
+  return response.json();
 };
 
 // Demande edition service  (!! POST REQUEST BECAUSE SHOULD BE VALIDATED BY ADMIN)
 export const askUpdateService = async (formData: FormData): Promise<Services> => {
   const response = await fetch(`${apiUrl}/service/edit/request`, {
+    method: "POST",
+    credentials: 'include',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.code || 'UNKNOWN_ERROR');
+  }
+  return response.json();
+};
+
+// Demande delete service  (!! POST REQUEST BECAUSE SHOULD BE VALIDATED BY ADMIN)
+export const askDeleteService = async (formData: FormData): Promise<Services> => {
+  const response = await fetch(`${apiUrl}/service/delete/request`, {
     method: "POST",
     credentials: 'include',
     body: formData,
@@ -78,7 +94,7 @@ export const askUpdateService = async (formData: FormData): Promise<Services> =>
 // };
 
 // Fonction pour récupérer toutes les requêtes admin (edit and delete)
-export const fetchAllRequests = async (): Promise<any[]> => {
+export const fetchAllRequests = async (): Promise<Requests[]> => {
   const response = await fetch(`${apiUrl}/admin/requests`, {
     method: "GET",
 	headers: {

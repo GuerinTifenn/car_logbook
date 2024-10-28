@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
-
+import { AppDispatch } from '../store/store';
 
 // Définir le type pour l'état d'authentification
 interface AuthState {
@@ -16,7 +16,6 @@ const initialState: AuthState = {
 };
 
 
-
 // Créez le slice pour l'authentification
 const authSlice = createSlice({
   name: 'auth',
@@ -26,18 +25,28 @@ const authSlice = createSlice({
     setToken(state, action: PayloadAction<string>) {
       state.token = action.payload;
       state.isAuthenticated = true;
-      Cookies.set('token', action.payload, { expires: 1, secure: true });
     },
     // Définir une action pour déconnecter l'utilisateur
     clearToken(state) {
       state.token = null;
       state.isAuthenticated = false;
-      Cookies.remove('token');
     },
   },
 });
 // Exporter les actions générées par createSlice
 export const { setToken, clearToken } = authSlice.actions;
+
+export const checkAuthStatus = () => (
+  dispatch: AppDispatch
+) => {
+  const token = Cookies.get('token');
+  if (!token) {
+    dispatch(clearToken());
+  } else {
+    dispatch(setToken(token));
+  }
+};
+
 
 // Exporter le reducer pour l'ajouter au store
 export default authSlice.reducer;

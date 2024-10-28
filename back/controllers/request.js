@@ -68,7 +68,7 @@ exports.getAllRequests = async (req, res) => {
   }
 };
 
-// accept or decline edit //
+// accept or decline edit by admin //
 exports.processEditRequest = async (req, res) => {
   try {
     const { requestId, action } = req.params;
@@ -94,7 +94,8 @@ exports.processEditRequest = async (req, res) => {
 
     } else if (action === "decline") {
       request.status = "declined";
-      await request.save();
+      service.status = "declined";
+      await Promise.all([service.save(), request.save()]);
 
     } else {
       return res.status(400).json({ success: false, message: "Invalid action" });
@@ -114,32 +115,47 @@ exports.processEditRequest = async (req, res) => {
 }
 
 //delete request
+exports.submitDeleteServiceRequest = async (req, res) => {
+  try {
+    const { comment } = req.body;
+    const userId = req.auth.userId
+    const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    const serviceId = req.body.serviceId;
 
-// exports.submitDeleteServiceRequest = async (req, res) => {
-//   try {
-//     const { comments } = req.body;
-//     const serviceId = req.body.serviceId;
+    // Ensure the service exists
 
-//     // Ensure the service exists
-//     const service = await Service.findById(serviceId);
-//     if (!service) {
-//       return res.status(404).json({ message: "Service not found" });
-//     }
+    const service = await Service.findById(serviceId);
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
 
-//     // Create the request object for a delete request
-//     const request = new Request({
-//       comments,
-//       service: serviceId,
-//       type: "delete",
-//       status: "pending",
-//     });
+    service.status = "pending";
+    await service.save(); // Save the updated service with the new status
 
-//     // Save the delete request
-//     const savedRequest = await request.save();
-//     return res.status(201).json({ message: "Delete request submitted successfully!", request: savedRequest });
+    // Check if a request for the same service already exists and is still pending
+    const existingRequest = await Request.findOne({ service: serviceId, status: "pending" });
 
-//   } catch (error) {
-//     console.error("Error submitting delete service request:", error);
-//     res.status(500).json({ error: error.message });
-//   }
-// };
+    if (existingRequest) {
+      // Delete the existing request (if you want to replace it)
+      await Request.findByIdAndDelete(existingRequest._id);
+    }
+
+    // Create the request object for a delete request
+    const request = new Request({
+      comment,
+      service: serviceId,
+      type: "delete",
+      userId,
+      status: "pending",
+      fileName: fileUrl
+    });
+
+    // Save the delete request
+    const savedRequest = await request.save();
+    return res.status(201).json({ message: "Delete request submitted successfully!", request: savedRequest });
+
+  } catch (error) {
+    console.error("Error submitting delete service request:", error);
+    res.status(500).json({ error: error.message });
+  }
+};

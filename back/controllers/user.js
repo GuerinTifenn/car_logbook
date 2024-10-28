@@ -32,7 +32,7 @@ exports.signup = (req, res, next) => {
               );
 
               res.cookie('token', token, {
-                httpOnly: true,
+              
                 secure: true,
                 sameSite: 'None',
                 path: '/',
@@ -77,7 +77,7 @@ exports.signin = (req, res, next) => {
           );
 
           res.cookie('token', token, {
-            httpOnly: true,
+
             secure: true,
             sameSite: 'None',
             path: '/',

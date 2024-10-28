@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import {
-  askUpdateService,
+  askUpdateService, askDeleteService,
   fetchServiceById,
 } from "../../../services/apiService";
 
@@ -22,6 +22,7 @@ const EditDeleteService: React.FC = () => {
   const serviceId: string = searchParams.get("serviceId") || "";
   const vehicleId: string = searchParams.get("vehicleId") || "";
   const editQuery: boolean = searchParams.has("edit") || false;
+  const deleteQuery: boolean = searchParams.has("delete") || false;
 
   // Fetch service data when component mounts
   useEffect(() => {
@@ -71,7 +72,17 @@ const EditDeleteService: React.FC = () => {
   };
 
   const resetForm = () => {
-    setComment(""), setDate(""), setPrice(undefined), setDescription(""), setKilometers(undefined), setFile(null);
+    if (editQuery) {
+      setComment(""),
+      setDate(""),
+      setPrice(undefined),
+      setDescription(""),
+      setKilometers(undefined),
+      setFile(null);
+    } else {
+      setComment(""),
+      setFile(null);
+    }
   };
 
   const handleSubmitEdit = async (e: React.FormEvent) => {
@@ -100,22 +111,57 @@ const EditDeleteService: React.FC = () => {
       await askUpdateService(formData);
       alert("Request send successfully to the admin!");
       router.push(`/services?vehicleId=${vehicleId}`);
-      resetForm()
+      resetForm();
     } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === "WRONG_EXTENSION") {
+          setErrorMessage(
+            "Invalid file format. Please upload a .png, .jpg, .jpeg, or .pdf file."
+          );
+        } else if (error.message === "FILE_TOO_LARGE") {
+          setErrorMessage(
+            "File is too large. Please upload a file smaller than 5MB."
+          );
+        } else {
+          alert("Failed to register the intervention. Please try again.");
+        }
+      }
       console.error("Failed to update the service:", error);
     }
   };
 
-  //   const handleSubmitDelete = async (e: React.FormEvent) => {
-  //     e.preventDefault();
-  //     try {
-  //       await deleteService(serviceId);
-  //       alert("Service deleted successfully!");
-  //       router.push("/services");
-  //     } catch (error) {
-  //       console.error("Failed to delete the service:", error);
-  //     }
-  //   };
+    const handleSubmitDelete = async (e: React.FormEvent) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("serviceId", serviceId);
+      formData.append("comment", comment);
+
+      if (file) {
+        formData.append("file", file);
+      }
+
+      try {
+        await askDeleteService(formData);
+        alert("Request send successfully to the admin!");
+        router.push(`/services?vehicleId=${vehicleId}`);
+        resetForm();
+      } catch (error) {
+        if (error instanceof Error) {
+          if (error.message === "WRONG_EXTENSION") {
+            setErrorMessage(
+              "Invalid file format. Please upload a .png, .jpg, .jpeg, or .pdf file."
+            );
+          } else if (error.message === "FILE_TOO_LARGE") {
+            setErrorMessage(
+              "File is too large. Please upload a file smaller than 5MB."
+            );
+          } else {
+            alert("Failed to register the intervention. Please try again.");
+          }
+        }
+        console.error("Failed to update the service:", error);
+      }
+    };
 
   const isEditFormValid = (): boolean => {
     return (
@@ -128,10 +174,19 @@ const EditDeleteService: React.FC = () => {
     );
   };
 
+  const isDeleteFormValid = (): boolean => {
+    return (
+      file !== null &&
+      comment.length > 1
+    );
+  };
+
   return (
     <section>
       <div className="edit-section">
-        <h1 className="text-4xl text-center my-5">Edit Service</h1>
+        <h1 className="text-4xl text-center my-5">
+          {editQuery ? "Edit Service" : "Delete Service"}
+        </h1>
         <div className="m-2 xl:m-5 flex flex-col xl:flex-row gap-5 justify-center">
           <div className="w-full xl:w-6/12 gap-5 xl:gap-0 flex flex-col">
             <p className="text-left xl:ml-12">
@@ -139,62 +194,131 @@ const EditDeleteService: React.FC = () => {
               an attachment that justifies your modification. Your request will
               then be reviewed and approved within 48 hours.
             </p>
-            {loading ? (
-              <p className="text-center">Loading...</p>
-            ) : (
-              <form onSubmit={handleSubmitEdit}>
+            {editQuery && (
+              <>
+                {loading ? (
+                  <p className="text-center">Loading...</p>
+                ) : (
+                  <form onSubmit={handleSubmitEdit}>
+                    <fieldset className="xl:m-12 flex flex-col gap-5">
+                      {/* Date */}
+                      <div className="relative flex flex-col gap-1.5 w-full">
+                        <label htmlFor="date">Date*</label>
+                        <input
+                          className="border border-1 px-2 py-2.5 w-full"
+                          type="date"
+                          name="InterventionDate"
+                          value={interventionDate}
+                          onChange={(e) => setDate(e.target.value)}
+                        />
+                      </div>
+
+                      {/* Description */}
+                      <div className="flex flex-col gap-1.5 w-full">
+                        <label htmlFor="description">Description*</label>
+                        <input
+                          className="border border-1 px-2 py-2.5"
+                          type="text"
+                          name="description"
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                          placeholder="Enter the Description"
+                        />
+                      </div>
+
+                      {/* Kilometers */}
+                      <div className="flex flex-col gap-1.5">
+                        <label htmlFor="kilometers">Kilometers*</label>
+                        <input
+                          className="border border-1 px-2 py-2.5 w-full"
+                          type="number"
+                          name="kilometers"
+                          value={kilometers !== undefined ? kilometers : ""}
+                          onChange={handleKilometersChange}
+                          placeholder="Enter kilometers"
+                        />
+                      </div>
+
+                      {/* Price */}
+                      <div className="flex flex-col gap-1.5">
+                        <label htmlFor="price">Price</label>
+                        <input
+                          className="border border-1 px-2 py-2.5 w-full"
+                          type="number"
+                          name="price"
+                          value={price !== undefined ? price : ""}
+                          onChange={handlePriceChange}
+                          placeholder="Enter price"
+                        />
+                      </div>
+
+                      {/* File Upload */}
+                      <div className="flex flex-col gap-1.5">
+                        <label htmlFor="file">Upload file*</label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            id="file"
+                            name="file"
+                            type="file"
+                            onChange={handleFileChange}
+                            className="hidden"
+                          />
+                          <input
+                            type="text"
+                            value={file?.name || "jpg, jpeg, png or pdf"}
+                            readOnly
+                            className={`border border-gray-300 px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue ${
+                              file ? "text-black" : "text-gray-400"
+                            }`}
+                            placeholder="No file selected"
+                          />
+                          <label
+                            htmlFor="file"
+                            className="bg-blue text-white px-4 py-2 cursor-pointer"
+                          >
+                            Browse
+                          </label>
+                        </div>
+                        {errorMessage && (
+                          <p style={{ color: "red" }}>{errorMessage}</p>
+                        )}
+                      </div>
+
+                      {/* Comment */}
+                      <div className="flex flex-col gap-1.5">
+                        <label htmlFor="comment">Comment*</label>
+                        <textarea
+                          id="comment"
+                          name="comment"
+                          value={comment}
+                          className="p-2"
+                          onChange={handleCommentChange}
+                          placeholder="Ajouter un commentaire..."
+                        />
+                      </div>
+
+                      {/* Submit Button */}
+                      <div className="mt-3">
+                        <button
+                          className={`${
+                            isEditFormValid()
+                              ? "bg-blue hover:bg-bluedark"
+                              : "bg-gray-300 cursor-not-allowed"
+                          } px-2 py-2.5 w-full text-white`}
+                          type="submit"
+                          disabled={!isEditFormValid()}
+                        >
+                          Request for validation
+                        </button>
+                      </div>
+                    </fieldset>
+                  </form>
+                )}
+              </>
+            )}
+            {deleteQuery && (
+              <form onSubmit={handleSubmitDelete}>
                 <fieldset className="xl:m-12 flex flex-col gap-5">
-                  {/* Date */}
-                  <div className="relative flex flex-col gap-1.5 w-full">
-                    <label htmlFor="date">Date*</label>
-                    <input
-                      className="border border-1 px-2 py-2.5 w-full"
-                      type="date"
-                      name="InterventionDate"
-                      value={interventionDate}
-                      onChange={(e) => setDate(e.target.value)}
-                    />
-                  </div>
-
-                  {/* Description */}
-                  <div className="flex flex-col gap-1.5 w-full">
-                    <label htmlFor="description">Description*</label>
-                    <input
-                      className="border border-1 px-2 py-2.5"
-                      type="text"
-                      name="description"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      placeholder="Enter the Description"
-                    />
-                  </div>
-
-                  {/* Kilometers */}
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="kilometers">Kilometers*</label>
-                    <input
-                      className="border border-1 px-2 py-2.5 w-full"
-                      type="number"
-                      name="kilometers"
-                      value={kilometers !== undefined ? kilometers : ""}
-                      onChange={handleKilometersChange}
-                      placeholder="Enter kilometers"
-                    />
-                  </div>
-
-                  {/* Price */}
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="price">Price</label>
-                    <input
-                      className="border border-1 px-2 py-2.5 w-full"
-                      type="number"
-                      name="price"
-                      value={price !== undefined ? price : ""}
-                      onChange={handlePriceChange}
-                      placeholder="Enter price"
-                    />
-                  </div>
-
                   {/* File Upload */}
                   <div className="flex flex-col gap-1.5">
                     <label htmlFor="file">Upload file*</label>
@@ -244,12 +368,12 @@ const EditDeleteService: React.FC = () => {
                   <div className="mt-3">
                     <button
                       className={`${
-                        isEditFormValid()
+                        isDeleteFormValid()
                           ? "bg-blue hover:bg-bluedark"
                           : "bg-gray-300 cursor-not-allowed"
                       } px-2 py-2.5 w-full text-white`}
                       type="submit"
-                      disabled={!isEditFormValid()}
+                      disabled={!isDeleteFormValid()}
                     >
                       Request for validation
                     </button>

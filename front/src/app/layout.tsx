@@ -3,8 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import ReduxProvider from '../../store/ReduxProvider'; // Importez le ReduxProvider
-
+import AuthChecker from "@/components/authChecker";
+import ReduxProvider from "../../store/ReduxProvider"; // Importez le ReduxProvider
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,9 +33,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
         <ReduxProvider>
-        <Header></Header>
-        <main className="flex-grow">{children}</main>
-        <Footer></Footer>
+          <AuthChecker>
+            <Header></Header>
+            <main className="flex-grow">{children}</main>
+            <Footer></Footer>
+          </AuthChecker>
         </ReduxProvider>
       </body>
     </html>

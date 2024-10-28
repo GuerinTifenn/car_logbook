@@ -8,11 +8,11 @@ import pencilIcon from "../../public/assets/pencil-edit.svg";
 import trashBinIcon from "../../public/assets/trash-bin.svg";
 import arrowRightIcon from "../../public/assets/arrow-right.svg";
 import { processEditRequest } from "../../../services/apiRequest";
+import { type Requests } from "../../../types/request";
 
 const AdminRequestsPage = () => {
-  const [requests, setRequests] = useState<any[]>([]);
+  const [requests, setRequests] = useState<Requests[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchRequestsAndServices = async () => {
@@ -28,23 +28,19 @@ const AdminRequestsPage = () => {
     fetchRequestsAndServices();
   }, []);
 
-  const filteredRequests = requests.filter((request) =>
-    request.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   const renderWithArrowIcon = (
-    current: any,
-    requested: any,
-    formatFn?: (val: any) => any
+    current: string | number  ,
+    requested: string | number,
+    formatFn?: (val:  string) => string
   ) => {
     const formattedCurrent = current
       ? formatFn
-        ? formatFn(current)
+        ? formatFn(String(current))
         : current
       : "N/A";
     const formattedRequested = requested
       ? formatFn
-        ? formatFn(requested)
+        ? formatFn(String(requested))
         : requested
       : "N/A";
 
@@ -81,44 +77,31 @@ const AdminRequestsPage = () => {
   };
 
   //   // Gérer le refus d'une requête
-  //   const handleDecline = async (requestId: string) => {
-  //     try {
-  //       await updateRequestStatus(requestId, "declined"); // Appel API pour refuser la requête
-  //       alert("Request declined!");
-  //       setRequests((prev) =>
-  //         prev.filter((request) => request._id !== requestId) // Filtre les requêtes une fois refusées
-  //       );
-  //     } catch (error) {
-  //       console.error("Failed to decline request", error);
-  //       alert("Failed to decline the request. Please try again.");
-  //     }
-  //   };
+  const handleDecline = async (requestId: string) => {
+    try {
+      await processEditRequest(requestId, "decline"); // Appel API pour refuser la requête
+      alert("Request declined!");
+      setRequests(
+        (prev) => prev.filter((request) => request._id !== requestId) // Filtre les requêtes une fois refusées
+      );
+    } catch (error) {
+      console.error("Failed to decline request", error);
+      alert("Failed to decline the request. Please try again.");
+    }
+  };
 
   return (
     <section className="p-6">
       <h1 className="text-3xl font-bold text-center my-8">Requests</h1>
-      <div className="flex justify-center">
-        <div className="w-full xl:w-6/12">
-          <div className="flex justify-center mb-6">
-            <input
-              type="text"
-              placeholder="🔍 Search by description"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="border rounded-lg p-2 w-full max-w-sm"
-            />
-          </div>
-        </div>
-      </div>
 
       {loading ? (
         <div className="text-center">Loading requests...</div>
       ) : (
         <div className="flex flex-col items-center mb-12 gap-8">
-          {filteredRequests.length === 0 ? (
+          {requests.length === 0 ? (
             <div className="text-center text-gray-500">No requests found</div>
           ) : (
-            filteredRequests.map((request) => {
+            requests.map((request) => {
               const currentService = request.service; // Récupérer les données actuelles directement à partir de la requête
 
               return (
@@ -195,7 +178,7 @@ const AdminRequestsPage = () => {
                       <div className="flex justify-center gap-3 mt-4">
                         <button
                           className="border border-gray-300 px-4 py-2 rounded hover:bg-grey"
-                          // onClick={() => handleDecline(request._id)}
+                          onClick={() => handleDecline(request._id)}
                         >
                           ✖ Decline
                         </button>

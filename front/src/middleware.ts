@@ -24,7 +24,8 @@ return NextResponse.next();
 export const config = {
   matcher: [
     '/dashboard',
-    '/services/:path*'
+    '/services/:path*',
+    '/admin'
     // '/profile',
     // '/settings',
     // '/my-cars',

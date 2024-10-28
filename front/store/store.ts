@@ -1,4 +1,4 @@
-import { combineReducers, configureStore} from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import authReducer from './authSlice'; // Importer le reducer d'authentification
 import userReducer from './userSlice'
 import vehicleReducer from './vehicleSlice'
@@ -47,7 +47,7 @@ export const createPreloadedState = (
   return {
     auth: { ...store.getState().auth, ...customState.auth },
     user: { ...store.getState().user, ...customState.user },
-    vehicle: { ...store.getState().user, ...customState.vehicle }
+    vehicle: { ...store.getState().vehicle, ...customState.vehicle }
   };
 };
 export type AppDispatch = typeof store.dispatch;
