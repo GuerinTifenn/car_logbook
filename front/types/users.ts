@@ -19,3 +19,15 @@ export type UserSignInPayLoad = {
   email: string;
   password: string;
 };
+
+export type UserProfilePayload = {
+  last_name: string,
+  first_name: string,
+  email: string
+}
+
+export type UserProfile = {
+  last_name: string,
+  first_name: string,
+  email: string
+}

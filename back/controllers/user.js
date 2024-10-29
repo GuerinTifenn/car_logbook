@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 exports.signup = (req, res, next) => {
   User.findOne({ email: req.body.email })
@@ -32,7 +33,7 @@ exports.signup = (req, res, next) => {
               );
 
               res.cookie('token', token, {
-              
+
                 secure: true,
                 sameSite: 'None',
                 path: '/',
@@ -111,3 +112,24 @@ exports.logout = (req, res, next) => {
   res.status(200).json({ message: "Logged out successfully!" });
 };
 
+// Fetch user profile informations
+exports.getUserProfileById = async (req, res, next) => {
+  try {
+    const userId  = req.auth.userId;
+     // Validate the userId format
+     if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
+    }
+
+    // Find the user by ID
+    const userInformations = await User.findById(userId);
+    if (!userInformations) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Return user information
+    res.status(200).json(userInformations);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
