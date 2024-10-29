@@ -60,7 +60,7 @@ exports.signin = (req, res, next) => {
     .then((existingUser) => {
       if (!existingUser) {
         return res.status(401).json({
-          error: { message: "User not found", code: "user not found" },
+          error: { message: "User not found", code: "user_not_found" },
         });
       }
       bcrypt
@@ -68,7 +68,7 @@ exports.signin = (req, res, next) => {
         .then((valid) => {
           if (!valid) {
             return res.status(401).json({
-              error: { message: "Wrong password", code: "wrong password" },
+              error: { message: "Wrong password", code: "wrong_password" },
             });
           }
           const token = jwt.sign(

@@ -4,19 +4,24 @@ import Image from "next/image";
 import signupImage from "../../public/assets/signup.jpeg";
 import { signup } from "../../../services/apiUser";
 import { useRouter } from "next/navigation";
-import { useDispatch } from 'react-redux';
-import { setToken } from '../../../store/authSlice';
-import { AppDispatch } from '../../../store/store';
-import { setUserId } from '../../../store/userSlice';
+import { useDispatch } from "react-redux";
+import { setToken } from "../../../store/authSlice";
+import { AppDispatch } from "../../../store/store";
+import { setUserId } from "../../../store/userSlice";
 
 export default function Register() {
   const [lastName, setLastName] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const isAdmin: boolean = false
+  const isAdmin: boolean = false;
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const [patternEmail] = useState<RegExp>(
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/
+  );
+  const [emailError, setEmailError] = useState<boolean>(false);
+  const [hasCorrectEmail, setEmailStatus] = useState<boolean>(false);
 
   const resetForm = () => {
     setEmail(""), setPassword(""), setFirstName(""), setLastName("");
@@ -30,7 +35,7 @@ export default function Register() {
       first_name: firstName,
       email,
       password,
-      is_admin: isAdmin
+      is_admin: isAdmin,
     };
     try {
       const response = await signup(userData);
@@ -48,12 +53,26 @@ export default function Register() {
     }
   };
 
+  const checkEmail = () => {
+    setEmailError(false);
+    patternEmail.test(email) ? setEmailStatus(true) : setEmailStatus(false);
+  };
+
+  const checkInputValid = () => {
+    if (!hasCorrectEmail) {
+      setEmailError(true);
+    } else {
+      setEmailError(false);
+    }
+  };
+
   const formValid = (): boolean => {
     return (
       lastName.length > 1 &&
       firstName.length > 1 &&
       email.length > 1 &&
-      password.length > 1
+      password.length > 1 &&
+      hasCorrectEmail
     );
   };
 
@@ -93,8 +112,13 @@ export default function Register() {
                   type="text"
                   name="email"
                   value={email}
+                  onKeyUp={checkEmail}
+                  onBlur={checkInputValid}
                   onChange={(e) => setEmail(e.target.value)}
                 />
+                {emailError && (
+                  <p style={{ color: "red" }}>Enter a valid email address</p>
+                )}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="password">Password</label>
@@ -109,7 +133,9 @@ export default function Register() {
               <div className="mt-3">
                 <button
                   className={`${
-                    formValid() ? "bg-blue hover:bg-bluedark" : "bg-grey text-greydark"
+                    formValid()
+                      ? "bg-blue hover:bg-bluedark"
+                      : "bg-grey text-greydark"
                   } px-2 py-2.5 w-full text-white`}
                   type="submit"
                   disabled={!formValid()}

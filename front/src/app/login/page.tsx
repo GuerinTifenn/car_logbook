@@ -9,15 +9,30 @@ import { setToken } from '../../../store/authSlice';
 import { AppDispatch } from '../../../store/store';
 import { setUserId, setUserAdminStatus } from '../../../store/userSlice';
 
+interface CustomError extends Error {
+  code: string;
+  message: string,
+}
+
 export default function Login() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const [hasNoAccount, setNoAccount] = useState<boolean>(false);
+  const [hasPasswordError, setPasswordError] = useState<boolean>(false);
 
   const resetForm = () => {
     setEmail(""), setPassword("");
   };
+
+  const resetPasswordError = () => {
+    setPasswordError(false)
+  };
+
+  const resetEmailError = () => {
+    setNoAccount(false)
+  }
 
   const submitForm = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -42,10 +57,17 @@ export default function Login() {
         }
       }
       resetForm();
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error("Signin error:", error.message); // Log the error
+    } catch (error) {
+      const customError = error as CustomError;
+      if (customError.code === "user_not_found") {
+        setNoAccount(true)
+      } else if (customError.code === "wrong_password") {
+        setPasswordError(true)
+      } else {
+        alert("An unexpected error occurred.");
       }
+        console.error("Signin error:", error); // Log the error
+
     }
   };
 
@@ -67,8 +89,12 @@ export default function Login() {
                   type="text"
                   name="email"
                   value={email}
+                  onKeyUp={resetEmailError}
                   onChange={(e) => setEmail(e.target.value)}
                 />
+                {hasNoAccount && (
+                  <p style={{ color: "red" }}>No account associated with this email address. Please create an account</p>
+                )}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="password">Password</label>
@@ -77,8 +103,12 @@ export default function Login() {
                   type="password"
                   name="password"
                   value={password}
+                  onKeyUp={resetPasswordError}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                {hasPasswordError && (
+                  <p style={{ color: "red" }}>Wrong password</p>
+                )}
               </div>
               <p>
                 Don&apos;t have an account?{" "}

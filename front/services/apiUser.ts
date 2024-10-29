@@ -42,16 +42,18 @@ export const signin = async (userData: UserSignInPayLoad): Promise<Response> => 
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || "Signin failed");
+      throw {
+        code: errorData.error.code || "signin_error",
+        message: errorData.error.message || "Signin failed",
+        statusCode: response.status,
+      };
     }
-
     return response; // Return the response for further handling
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error("Error during signin:", error.message);
-      throw new Error(error.message || "Unknown error occurred during signin");
-    }
-    throw new Error("Unknown error occurred");
+  }
+    catch (error) {
+      console.error("Error during signin:", error);
+      throw error; // Re-throw error to be caught by calling function
+
   }
 };
 
@@ -121,7 +123,7 @@ export const updateUserProfile = async(userProfileData: UserProfilePayload): Pro
       throw new Error(errorData.message || "Updating user informations failed");
     }
 
-    return response; 
+    return response;
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error("Error during the update of user informations:", error.message);
