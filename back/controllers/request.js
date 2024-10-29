@@ -114,6 +114,49 @@ exports.processEditRequest = async (req, res) => {
   }
 }
 
+// accept or decline delete by admin //
+exports.processDeleteRequest = async (req, res) => {
+  try {
+    const { requestId, action } = req.params;
+
+    const request = await Request.findById(requestId);
+    if (!request) return res.status(404).json({ success: false, message: "Request not found" });
+
+    const service = await Service.findById(request.service._id);
+    if (!service) return res.status(404).json({ success: false, message: "Service not found" });
+
+    if (action === "accept") {
+      await Promise.all([
+        Service.findByIdAndDelete(service._id),
+        Request.findByIdAndDelete(request._id),
+      ]);
+      return res.status(200).json({
+        success: true,
+        message: "Delete request accepted, service deleted successfully.",
+      });
+
+
+    } else if (action === "decline") {
+      service.status = "declined";
+      await Promise.all([
+        service.save(),
+        Request.findByIdAndDelete(request._id),
+      ]);
+      return res.status(200).json({
+        success: true,
+        message: "Delete request declined successfully.",
+      });
+
+    } else {
+      return res.status(400).json({ success: false, message: "Invalid action" });
+    }
+
+  } catch (error) {
+    console.error("Error processing request:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
 //delete request
 exports.submitDeleteServiceRequest = async (req, res) => {
   try {

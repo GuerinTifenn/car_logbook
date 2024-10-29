@@ -7,7 +7,7 @@ import { formatDate } from "@/utils/date";
 import pencilIcon from "../../public/assets/pencil-edit.svg";
 import trashBinIcon from "../../public/assets/trash-bin.svg";
 import arrowRightIcon from "../../public/assets/arrow-right.svg";
-import { processEditRequest } from "../../../services/apiRequest";
+import { processEditRequest , processDeleteRequest} from "../../../services/apiRequest";
 import { type Requests } from "../../../types/request";
 
 const AdminRequestsPage = () => {
@@ -63,9 +63,13 @@ const AdminRequestsPage = () => {
   };
 
   //   // Gérer l'acceptation d'une requête
-  const handleAccept = async (requestId: string) => {
+  const handleAccept = async (requestId: string, requestType: string) => {
     try {
-      await processEditRequest(requestId, "accept"); // Appel API pour accepter la requête
+      if (requestType === 'edit') {
+        await processEditRequest(requestId, "accept"); // Appel API pour accepter la requête
+      } else {
+        await processDeleteRequest(requestId, "accept"); // Appel API pour accepter la requête
+      }
       alert("Request accepted!");
       setRequests(
         (prev) => prev.filter((request) => request._id !== requestId) // Filtre les requêtes une fois acceptées
@@ -77,9 +81,13 @@ const AdminRequestsPage = () => {
   };
 
   //   // Gérer le refus d'une requête
-  const handleDecline = async (requestId: string) => {
+  const handleDecline = async (requestId: string, requestType: string) => {
     try {
-      await processEditRequest(requestId, "decline"); // Appel API pour refuser la requête
+      if (requestType === 'edit') {
+        await processEditRequest(requestId, "decline"); // Appel API pour accepter la requête
+      } else {
+        await processDeleteRequest(requestId, "decline"); // Appel API pour accepter la requête
+      }
       alert("Request declined!");
       setRequests(
         (prev) => prev.filter((request) => request._id !== requestId) // Filtre les requêtes une fois refusées
@@ -178,13 +186,13 @@ const AdminRequestsPage = () => {
                       <div className="flex justify-center gap-3 mt-4">
                         <button
                           className="border border-gray-300 px-4 py-2 rounded hover:bg-grey"
-                          onClick={() => handleDecline(request._id)}
+                          onClick={() => handleDecline(request._id, request.type)}
                         >
                           ✖ Decline
                         </button>
                         <button
                           className="bg-blue hover:bg-bluedark text-white px-4 py-2 rounded"
-                          onClick={() => handleAccept(request._id)}
+                          onClick={() => handleAccept(request._id, request.type)}
                         >
                           ✔ Accept
                         </button>

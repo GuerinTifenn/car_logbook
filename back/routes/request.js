@@ -9,5 +9,6 @@ router.post("/service/edit/request", auth, multer, requestController.submitEditS
 router.post("/service/delete/request", auth, multer, requestController.submitDeleteServiceRequest);
 router.get("/admin/requests", auth, requestController.getAllRequests);
 router.patch("/admin/requests/edit/process/:requestId/:action", auth, requestController.processEditRequest);
+router.patch("/admin/requests/delete/process/:requestId/:action", auth, requestController.processDeleteRequest);
 
 module.exports = router;
