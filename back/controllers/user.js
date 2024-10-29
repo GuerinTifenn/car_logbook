@@ -133,3 +133,35 @@ exports.getUserProfileById = async (req, res, next) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// Fetch user profile informations
+exports.updateUserProfile = async (req, res, next) => {
+  try {
+    const userId  = req.auth.userId;
+     // Validate the userId format
+     if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
+    }
+
+    const { first_name, last_name, email } = req.body;
+
+    // Update user's profile specified fields
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { first_name, last_name, email },
+      { new: true, runValidators: true } // Return the updated document and run validation
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Return the updated user information
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

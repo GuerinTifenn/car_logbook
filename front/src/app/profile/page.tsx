@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { fetchUserProfile } from "../../../services/apiUser";
+import { fetchUserProfile, updateUserProfile } from "../../../services/apiUser";
 
 const Profile: React.FC = () => {
   const [lastName, setLastName] = useState<string>("");
@@ -33,7 +33,10 @@ const Profile: React.FC = () => {
   // Form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = { lastName, firstName, email };
+    const formData = {
+		last_name: lastName,
+		first_name: firstName,
+		email };
 
     try {
       await updateUserProfile(formData);
