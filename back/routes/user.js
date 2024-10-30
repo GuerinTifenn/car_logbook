@@ -8,5 +8,6 @@ router.post("/signin", userCtrl.signin);
 router.post("/logout", auth, userCtrl.logout);
 router.get("/profile", auth, userCtrl.getUserProfileById);
 router.put("/profile/update", auth, userCtrl.updateUserProfile);
+router.post("/update/password", auth, userCtrl.updatePassword)
 
 module.exports = router;

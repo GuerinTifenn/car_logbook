@@ -31,3 +31,8 @@ export type UserProfile = {
   first_name: string,
   email: string
 }
+
+export type UserPassword = {
+  current_password: string,
+  new_password: string
+}

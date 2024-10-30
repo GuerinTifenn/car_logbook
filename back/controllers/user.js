@@ -165,3 +165,37 @@ exports.updateUserProfile = async (req, res, next) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.updatePassword = async (req, res) => {
+  try {
+    const userId = req.auth.userId;
+    const { current_password, new_password } = req.body;
+
+    // Fetch the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if the current password matches the stored hash
+    const isPasswordValid = await bcrypt.compare(current_password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        error: { message: "Current password is invalid", code: "current_password_mismatch" },
+      });
+    }
+
+    // Hash the new password
+    const hashedNewPassword = await bcrypt.hash(new_password, 10);
+
+    // Update the user's password in the database
+    user.password = hashedNewPassword;
+    await user.save();
+
+    // Return a success message
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ message: "Failed to update password" });
+  }
+};

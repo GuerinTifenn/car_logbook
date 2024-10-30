@@ -1,4 +1,4 @@
-import { UserProfile, UserProfilePayload, type UserPayLoad, type UserSignInPayLoad } from "../types/users";
+import { UserProfile, UserProfilePayload, type UserPayLoad, type UserSignInPayLoad, type UserPassword } from "../types/users";
 
 const API_URL = "http://localhost:3000/api";
 
@@ -132,4 +132,32 @@ export const updateUserProfile = async(userProfileData: UserProfilePayload): Pro
     throw new Error("Unknown error occurred");
   }
 }
+
+export const updatePassword = async (userData: UserPassword): Promise<Response> => {
+  try {
+    const response = await fetch(`${API_URL}/update/password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: 'include',
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw {
+        code: errorData.error.code || "password_error",
+        message: errorData.error.message || "Update password failed",
+        statusCode: response.status,
+      };
+    }
+    return response; // Return the response for further handling
+  }
+    catch (error) {
+      console.error("Error during update password:", error);
+      throw error; // Re-throw error to be caught by calling function
+
+  }
+};
 
