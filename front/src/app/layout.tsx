@@ -6,6 +6,7 @@ import Footer from "@/components/footer";
 import AuthChecker from "@/components/authChecker";
 import ReduxProvider from "../../store/ReduxProvider"; // Importez le ReduxProvider
 
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -20,6 +21,10 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Autolog",
   description: "Digital vehicle maintenance tracking",
+  icons: {
+    icon: "/icon.ico",
+    shortcut: "/icon.ico",
+  },
 };
 
 export default function RootLayout({
