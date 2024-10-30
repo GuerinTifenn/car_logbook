@@ -4,14 +4,14 @@ import Image from "next/image";
 import loginImage from "../../public/assets/login.jpeg";
 import { signin } from "../../../services/apiUser";
 import { useRouter } from "next/navigation";
-import { useDispatch } from 'react-redux';
-import { setToken } from '../../../store/authSlice';
-import { AppDispatch } from '../../../store/store';
-import { setUserId, setUserAdminStatus } from '../../../store/userSlice';
+import { useDispatch } from "react-redux";
+import { setToken } from "../../../store/authSlice";
+import { AppDispatch } from "../../../store/store";
+import { setUserId, setUserAdminStatus } from "../../../store/userSlice";
 
 interface CustomError extends Error {
   code: string;
-  message: string,
+  message: string;
 }
 
 export default function Login() {
@@ -27,12 +27,12 @@ export default function Login() {
   };
 
   const resetPasswordError = () => {
-    setPasswordError(false)
+    setPasswordError(false);
   };
 
   const resetEmailError = () => {
-    setNoAccount(false)
-  }
+    setNoAccount(false);
+  };
 
   const submitForm = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -60,14 +60,13 @@ export default function Login() {
     } catch (error) {
       const customError = error as CustomError;
       if (customError.code === "user_not_found") {
-        setNoAccount(true)
+        setNoAccount(true);
       } else if (customError.code === "wrong_password") {
-        setPasswordError(true)
+        setPasswordError(true);
       } else {
         alert("An unexpected error occurred.");
       }
-        console.error("Signin error:", error); // Log the error
-
+      console.error("Signin error:", error); // Log the error
     }
   };
 
@@ -93,7 +92,10 @@ export default function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 {hasNoAccount && (
-                  <p style={{ color: "red" }}>No account associated with this email address. Please create an account</p>
+                  <p style={{ color: "red" }}>
+                    No account associated with this email address. Please create
+                    an account
+                  </p>
                 )}
               </div>
               <div className="flex flex-col gap-1.5">
@@ -120,7 +122,9 @@ export default function Login() {
               <div className="mt-3">
                 <button
                   className={`${
-                    formValid() ? "bg-blue hover:bg-bluedark" : "bg-grey text-greydark"
+                    formValid()
+                      ? "bg-blue hover:bg-bluedark"
+                      : "bg-grey text-greydark"
                   } px-2 py-2.5 w-full text-white`}
                   type="submit"
                   disabled={!formValid()}

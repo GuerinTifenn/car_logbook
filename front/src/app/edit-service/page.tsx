@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import {
-  askUpdateService, askDeleteService,
+  askUpdateService,
+  askDeleteService,
   fetchServiceById,
 } from "../../../services/apiService";
 
@@ -74,14 +75,13 @@ const EditDeleteService: React.FC = () => {
   const resetForm = () => {
     if (editQuery) {
       setComment(""),
-      setDate(""),
-      setPrice(undefined),
-      setDescription(""),
-      setKilometers(undefined),
-      setFile(null);
+        setDate(""),
+        setPrice(undefined),
+        setDescription(""),
+        setKilometers(undefined),
+        setFile(null);
     } else {
-      setComment(""),
-      setFile(null);
+      setComment(""), setFile(null);
     }
   };
 
@@ -130,38 +130,38 @@ const EditDeleteService: React.FC = () => {
     }
   };
 
-    const handleSubmitDelete = async (e: React.FormEvent) => {
-      e.preventDefault();
-      const formData = new FormData();
-      formData.append("serviceId", serviceId);
-      formData.append("comment", comment);
+  const handleSubmitDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("serviceId", serviceId);
+    formData.append("comment", comment);
 
-      if (file) {
-        formData.append("file", file);
-      }
+    if (file) {
+      formData.append("file", file);
+    }
 
-      try {
-        await askDeleteService(formData);
-        alert("Request send successfully to the admin!");
-        router.push(`/services?vehicleId=${vehicleId}`);
-        resetForm();
-      } catch (error) {
-        if (error instanceof Error) {
-          if (error.message === "WRONG_EXTENSION") {
-            setErrorMessage(
-              "Invalid file format. Please upload a .png, .jpg, .jpeg, or .pdf file."
-            );
-          } else if (error.message === "FILE_TOO_LARGE") {
-            setErrorMessage(
-              "File is too large. Please upload a file smaller than 5MB."
-            );
-          } else {
-            alert("Failed to register the intervention. Please try again.");
-          }
+    try {
+      await askDeleteService(formData);
+      alert("Request send successfully to the admin!");
+      router.push(`/services?vehicleId=${vehicleId}`);
+      resetForm();
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === "WRONG_EXTENSION") {
+          setErrorMessage(
+            "Invalid file format. Please upload a .png, .jpg, .jpeg, or .pdf file."
+          );
+        } else if (error.message === "FILE_TOO_LARGE") {
+          setErrorMessage(
+            "File is too large. Please upload a file smaller than 5MB."
+          );
+        } else {
+          alert("Failed to register the intervention. Please try again.");
         }
-        console.error("Failed to update the service:", error);
       }
-    };
+      console.error("Failed to update the service:", error);
+    }
+  };
 
   const isEditFormValid = (): boolean => {
     return (
@@ -175,10 +175,7 @@ const EditDeleteService: React.FC = () => {
   };
 
   const isDeleteFormValid = (): boolean => {
-    return (
-      file !== null &&
-      comment.length > 1
-    );
+    return file !== null && comment.length > 1;
   };
 
   return (

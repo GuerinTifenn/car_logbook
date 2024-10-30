@@ -8,9 +8,11 @@ const Profile: React.FC = () => {
   const [firstName, setFirstName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [patternEmail] = useState<RegExp>((/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/));
-  const [emailError, setEmailError] = useState<boolean>(false)
-  const [hasCorrectEmail, setEmailStatus] = useState<boolean>(false)
+  const [patternEmail] = useState<RegExp>(
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/
+  );
+  const [emailError, setEmailError] = useState<boolean>(false);
+  const [hasCorrectEmail, setEmailStatus] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -37,9 +39,10 @@ const Profile: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = {
-		last_name: lastName,
-		first_name: firstName,
-		email };
+      last_name: lastName,
+      first_name: firstName,
+      email,
+    };
 
     try {
       await updateUserProfile(formData);
@@ -51,22 +54,26 @@ const Profile: React.FC = () => {
     }
   };
 
-  const checkEmail = ()  => {
-	setEmailError(false)
-	patternEmail.test(email) ? setEmailStatus(true) : setEmailStatus(false)
-  }
+  const checkEmail = () => {
+    setEmailError(false);
+    patternEmail.test(email) ? setEmailStatus(true) : setEmailStatus(false);
+  };
 
   const checkInputValid = () => {
-	if (!hasCorrectEmail) {
-		setEmailError(true)
-	} else {
-		setEmailError(false)
-	}
-  }
-
+    if (!hasCorrectEmail) {
+      setEmailError(true);
+    } else {
+      setEmailError(false);
+    }
+  };
 
   const isFormValid = (): boolean => {
-    return lastName.length > 1 && firstName.length > 1 && email.length > 1 && hasCorrectEmail;
+    return (
+      lastName.length > 1 &&
+      firstName.length > 1 &&
+      email.length > 1 &&
+      hasCorrectEmail
+    );
   };
 
   return (
@@ -112,11 +119,15 @@ const Profile: React.FC = () => {
                       type="email"
                       name="email"
                       value={email}
-					  onKeyUp={checkEmail}
-					  onBlur={checkInputValid}
+                      onKeyUp={checkEmail}
+                      onBlur={checkInputValid}
                       onChange={(e) => setEmail(e.target.value)}
                     />
-					{emailError && <p style={{ color: "red" }}>Enter a valid email address</p>}
+                    {emailError && (
+                      <p style={{ color: "red" }}>
+                        Enter a valid email address
+                      </p>
+                    )}
                   </div>
 
                   {/* Password */}

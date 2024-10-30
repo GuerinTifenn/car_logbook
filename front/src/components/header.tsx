@@ -9,7 +9,7 @@ import userIconBlack from "../public/assets/user_black.svg";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store/store";
 import { clearToken } from "../../store/authSlice";
-import { clearUser } from "../../store/userSlice"
+import { clearUser } from "../../store/userSlice";
 import { logout } from "../../services/apiUser";
 
 const Header: FC = () => {
@@ -25,9 +25,7 @@ const Header: FC = () => {
     (state: RootState) => state.auth.isAuthenticated
   );
 
-  const isAdmin = useSelector(
-    (state: RootState) => state.user.userAdminStatus
-  );
+  const isAdmin = useSelector((state: RootState) => state.user.userAdminStatus);
 
   // Gérer l'ouverture et la fermeture du dropdown
   const handleClick = () => {
@@ -48,7 +46,7 @@ const Header: FC = () => {
     try {
       await logout();
       dispatch(clearToken()); // Déconnexion du state Redux
-      dispatch(clearUser())
+      dispatch(clearUser());
       setIsOpen(false);
       router.replace("/login");
     } catch (error: unknown) {

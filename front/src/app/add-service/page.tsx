@@ -31,10 +31,9 @@ const AddService: React.FC = () => {
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
-    if (value >= 0) { // Allow only non-negative numbers
-      setPrice(value ? Number(value) : undefined);// Handle empty input
+    if (value >= 0) {
+      setPrice(value ? Number(value) : undefined); // Handle empty input
     }
-
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

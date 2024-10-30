@@ -145,7 +145,9 @@ const RegisterCar: React.FC = () => {
 
               {/* Ligne 3 : VIN */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="vin">Vehicle Identification Number (VIN)*</label>
+                <label htmlFor="vin">
+                  Vehicle Identification Number (VIN)*
+                </label>
                 <input
                   className="border border-1 px-2 py-2.5 w-full"
                   type="text"
