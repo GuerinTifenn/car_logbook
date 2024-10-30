@@ -160,13 +160,6 @@ const ServicesPage: React.FC = () => {
                             {service.price ? `${service.price} €` : ""}
                           </p>
                         </div>
-                        <div>
-                          {/* <Image
-                            src={trashBinIcon}
-                            alt="delete"
-                            width={24}
-                          ></Image> */}
-                        </div>
                       </div>
                     </div>
                     <div className="card-footer mt-auto">

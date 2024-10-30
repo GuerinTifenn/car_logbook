@@ -62,6 +62,11 @@ const AdminRequestsPage = () => {
     );
   };
 
+  const handleViewInvoice = (fileUrl: string) => {
+    // Open the file file in a new tab
+    window.open(fileUrl, "_blank"); // Opens in a new tab
+  };
+
   //   // Gérer l'acceptation d'une requête
   const handleAccept = async (requestId: string, requestType: string) => {
     try {
@@ -143,6 +148,7 @@ const AdminRequestsPage = () => {
                       </div>
                       <hr className="border my-3 border-grey" />
 
+                          <div className="flex justify-between">
                       <div className="flex flex-col gap-2 text-left">
                         <div>
                           <strong>Date:</strong>{" "}
@@ -181,6 +187,15 @@ const AdminRequestsPage = () => {
                           <strong>Comment:</strong> {request.comment || "N/A"}
                         </div>
                       </div>
+                      <div className="card-footer">
+                      <button
+                        className="bg-blue text-white rounded px-4 py-2 hover:bg-bluedark transition-colors"
+                        onClick={() => handleViewInvoice(request.fileName)}
+                      >
+                        View Invoice
+                      </button>
+                    </div>
+                    </div>
 
                       {/* Boutons accept/refuse */}
                       <div className="flex justify-center gap-3 mt-4">

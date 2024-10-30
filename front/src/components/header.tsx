@@ -25,6 +25,10 @@ const Header: FC = () => {
     (state: RootState) => state.auth.isAuthenticated
   );
 
+  const isAdmin = useSelector(
+    (state: RootState) => state.user.userAdminStatus
+  );
+
   // Gérer l'ouverture et la fermeture du dropdown
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -103,7 +107,7 @@ const Header: FC = () => {
                   </li>
                   <li>
                     <Link
-                      href="/dashboard"
+                      href={isAdmin ? "/admin" : "/dashboard"}
                       className="block hover:bg-blue hover:text-white p-2"
                     >
                       Dashboard
