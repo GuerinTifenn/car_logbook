@@ -30,7 +30,7 @@ const Dashboard: React.FC = () => {
       }
     };
     fetchAllVehicles();
-  }, [userId]);
+  }, [userId, router]);
 
   const goToServices = (vehicleID: string) => {
     router.push(`/services?vehicleId=${vehicleID}`);
@@ -43,12 +43,9 @@ const Dashboard: React.FC = () => {
       </h1>
 
       {loading ? (
-        // Affichage de l'état de chargement
         <div className="text-center">Loading...</div>
       ) : (
-        // Si le chargement est terminé
         <div className="grid md:grid-cols-grid-auto-fit gap-8 justify-center">
-          {/* Afficher les cartes de véhicules si elles existent */}
           {vehicles.length > 0 &&
             vehicles.map((vehicle) => (
               <div
@@ -63,16 +60,10 @@ const Dashboard: React.FC = () => {
                   <span className="text-lg mb-2">
                     {formatDateFR(vehicle.firstRegistrationDate)}
                   </span>
-                  {/* <p className="text-lg mb-2">
-                    First Registration Date: {vehicle.firstRegistrationDate}
-                  </p> */}
                   <p className="text-lg mb-2">
                     Registration: {vehicle.registration}
                   </p>
                   <p className="text-lg mb-4">VIN: {vehicle.vin}</p>
-                  {/* {vehicle.fileName && (
-                    <p className="text-sm italic text-gray-500 mb-4">Uploaded File: {vehicle.fileName}</p> */}
-                  {/* )} */}
                 </div>
                 <div className="card-footer mt-auto">
                   <button
@@ -85,7 +76,6 @@ const Dashboard: React.FC = () => {
               </div>
             ))}
 
-          {/* Afficher la carte pour ajouter un nouveau véhicule */}
           <div className="border border-gray-200 rounded-lg p-6 shadow-lg text-center hover:shadow-2xl transition-shadow duration-200 flex flex-col justify-between h-full">
             <div className="flex-grow">
               <h2 className="text-2xl font-semibold mb-4">Add a new car</h2>
